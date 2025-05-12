@@ -11,8 +11,8 @@ const MapComponent = () => {
 
   // Bounding box for Dewsbury
   const dewsburyBounds = [
-    [-1.633, 53.687], // Southwest coordinates (minLng, minLat)
-    [-1.627, 53.694], // Northeast coordinates (maxLng, maxLat)
+    [-1.631, 53.688], // Southwest coordinates (minLng, minLat)
+    [-1.625, 53.693], // Northeast coordinates (maxLng, maxLat)
   ];
 
   // Fetch building data from multiple files
@@ -128,7 +128,7 @@ const MapComponent = () => {
             ["get", "relativeheightmaximum"],
             ["get", "height_relativemax_m"],
             ["get", "absoluteheightmaximum"],
-              3,
+            3,
           ],
           "fill-extrusion-opacity": 0.7,
         },
