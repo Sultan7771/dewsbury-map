@@ -9,17 +9,23 @@ const MapComponent = () => {
   const mapContainer = useRef(null);
   const [map, setMap] = useState(null);
 
+  // Bounding box for Dewsbury
+  const dewsburyBounds = [
+    [-1.633, 53.687], // Southwest coordinates (minLng, minLat)
+    [-1.627, 53.694], // Northeast coordinates (maxLng, maxLat)
+  ];
+
   // Fetch building data from multiple files
   const fetchBuildingData = async () => {
     let features = [];
-    const totalPages = 7; // Update this if you get more files
+    const totalPages = 7;
 
     try {
       for (let page = 1; page <= totalPages; page++) {
         const response = await fetch(`/dewsbury_buildings_${page}.geojson`);
         if (!response.ok) {
           console.error(`Error fetching page ${page}: ${response.status}`);
-          continue; // Try the next page even if one fails
+          continue;
         }
 
         const data = await response.json();
@@ -73,9 +79,10 @@ const MapComponent = () => {
     const mapInstance = new mapboxgl.Map({
       container: mapContainer.current,
       style: MAP_STYLE,
-      center: [-1.6302, 53.6911], // Dewsbury coordinates
+      center: [-1.6302, 53.6911], // Dewsbury center coordinates
       zoom: 15,
       pitch: 60,
+      maxBounds: dewsburyBounds, // Restrict map to Dewsbury area
     });
 
     mapInstance.on("load", async () => {
@@ -86,6 +93,7 @@ const MapComponent = () => {
         return;
       }
 
+      // Add source and layer for 3D buildings
       mapInstance.addSource("dewsbury-buildings", {
         type: "geojson",
         data: data,
@@ -120,8 +128,9 @@ const MapComponent = () => {
             ["get", "relativeheightmaximum"],
             ["get", "height_relativemax_m"],
             ["get", "absoluteheightmaximum"],
-            3,
+              3,
           ],
+          "fill-extrusion-opacity": 0.7,
         },
       });
 
