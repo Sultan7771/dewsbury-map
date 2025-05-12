@@ -9,10 +9,14 @@ const MapComponent = () => {
   const mapContainer = useRef(null);
   const [map, setMap] = useState(null);
 
-  // Bounding box for Dewsbury
-  const dewsburyBounds = [
-    [-1.631, 53.688], // Southwest coordinates (minLng, minLat)
-    [-1.625, 53.693], // Northeast coordinates (maxLng, maxLat)
+  // Dewsbury polygon coordinates (approximate)
+  const dewsburyPolygon = [
+    [-1.632, 53.692], // Top left (near railway station)
+    [-1.6275, 53.6915], // Top right (near Leeds Rd)
+    [-1.627, 53.689], // Bottom right (near Sainsbury's)
+    [-1.6295, 53.688], // Bottom left (near B&Q)
+    [-1.632, 53.6895], // Left mid (near Old Westgate)
+    [-1.632, 53.692], // Closing the loop
   ];
 
   // Fetch building data from multiple files
@@ -74,20 +78,33 @@ const MapComponent = () => {
     }
   };
 
-  // Initialize the Map
+  // Initialize the Map with controlled interaction and single instance
   const initializeMap = async () => {
+    if (map) return; // Prevent duplicate initialization
+
     const mapInstance = new mapboxgl.Map({
       container: mapContainer.current,
       style: MAP_STYLE,
       center: [-1.6302, 53.6911], // Dewsbury center coordinates
-      zoom: 15,
-      pitch: 60,
-      maxBounds: dewsburyBounds, // Restrict map to Dewsbury area
+      zoom: 17, // Optimal zoom level
+      pitch: 60, // 3D view
+      bearing: -30, // Isometric perspective
+      projection: "globe", // Rounded effect
     });
 
-    mapInstance.on("load", async () => {
-      const data = await fetchBuildingData();
+    // Enable user interactions
+    mapInstance.scrollZoom.enable();
+    mapInstance.dragPan.enable();
+    mapInstance.dragRotate.enable();
+    mapInstance.touchZoomRotate.enable();
 
+    // Restrict map to Dewsbury bounds
+    mapInstance.on("load", async () => {
+      const bounds = new mapboxgl.LngLatBounds();
+      dewsburyPolygon.forEach((coord) => bounds.extend(coord));
+      mapInstance.setMaxBounds(bounds);
+
+      const data = await fetchBuildingData();
       if (!data || data.features.length === 0) {
         console.error("No building data available for rendering.");
         return;
@@ -112,7 +129,7 @@ const MapComponent = () => {
               ["get", "relativeheightmaximum"],
               ["get", "height_relativemax_m"],
               ["get", "absoluteheightmaximum"],
-              3, // Default height if no data
+              3,
             ],
             0,
             "#f28cb1",
@@ -130,15 +147,23 @@ const MapComponent = () => {
             ["get", "absoluteheightmaximum"],
             3,
           ],
-          "fill-extrusion-opacity": 0.7,
+          "fill-extrusion-opacity": 0.8,
+          "fill-extrusion-vertical-gradient": true,
         },
       });
 
-      console.log("3D building layer added.");
+      console.log("3D building layer with controlled interaction added.");
     });
 
     setMap(mapInstance);
   };
+
+  useEffect(() => {
+    initializeMap();
+    return () => {
+      if (map) map.remove(); // Clean up to avoid multiple instances
+    };
+  }, []);
 
   useEffect(() => {
     if (!map) initializeMap();
