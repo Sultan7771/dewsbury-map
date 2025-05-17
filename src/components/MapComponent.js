@@ -7,7 +7,6 @@ mapboxgl.accessToken = MAPBOX_TOKEN;
 
 const MAX_HEIGHT = 50;   // Maximum building height to avoid overflow
 const MIN_HEIGHT = 5;    // Minimum height to keep buildings visible
-const DEFAULT_HEIGHT = 3; // Height for non-selected buildings
 
 // Utility: Get building height from OS data properties
 const getBuildingHeight = (properties) => {
@@ -49,6 +48,8 @@ const fetchBuildingData = async () => {
             feature.id = feature.properties.osid;
             // Store the calculated height in properties for easy access
             feature.properties.calculatedHeight = getBuildingHeight(feature.properties);
+            // Store 10% height for default display
+            feature.properties.defaultHeight = feature.properties.calculatedHeight * 0.1;
           } else {
             console.warn("Building without OS ID:", feature);
           }
@@ -96,7 +97,7 @@ const handleBuildingClick = (mapInstance) => {
       ]
     );
 
-    // Set height - selected building to full height, others to minimal height
+    // Set height - selected building to full height, others to 10% height
     mapInstance.setPaintProperty(
       "3d-buildings",
       "fill-extrusion-height",
@@ -104,7 +105,7 @@ const handleBuildingClick = (mapInstance) => {
         "case",
         ["==", ["get", "osid"], buildingId],
         ["get", "calculatedHeight"], // Full height for selected
-        DEFAULT_HEIGHT              // Minimal height for others
+        ["get", "defaultHeight"]    // 10% height for others
       ]
     );
   });
@@ -165,7 +166,7 @@ const initializeMap = async (mapContainer, setMap) => {
       source: "dewsbury-buildings",
       paint: {
         "fill-extrusion-color": "#51bbd6",
-        "fill-extrusion-height": DEFAULT_HEIGHT, // Start with minimal height for all
+        "fill-extrusion-height": ["get", "defaultHeight"], // Start with 10% height for all
         "fill-extrusion-opacity": 0.6,
         "fill-extrusion-vertical-gradient": true,
       },
