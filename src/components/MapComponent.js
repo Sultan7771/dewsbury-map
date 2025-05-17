@@ -7,6 +7,7 @@ mapboxgl.accessToken = MAPBOX_TOKEN;
 
 const MAX_HEIGHT = 50;   // Maximum building height to avoid overflow
 const MIN_HEIGHT = 5;    // Minimum height to keep buildings visible
+const DEFAULT_HEIGHT = 3; // Height for non-selected buildings
 
 // Utility: Get building height from OS data properties
 const getBuildingHeight = (properties) => {
@@ -25,6 +26,7 @@ const printBuildingDetails = (building) => {
   const height = getBuildingHeight(building.properties);
   console.log(`Selected Building OS ID: ${building.properties.osid}`);
   console.log(`Building Height: ${height} meters`);
+  return height;
 };
 
 // Fetch building data from multiple files
@@ -45,6 +47,8 @@ const fetchBuildingData = async () => {
         data.features.forEach((feature) => {
           if (feature.properties.osid) {
             feature.id = feature.properties.osid;
+            // Store the calculated height in properties for easy access
+            feature.properties.calculatedHeight = getBuildingHeight(feature.properties);
           } else {
             console.warn("Building without OS ID:", feature);
           }
@@ -64,20 +68,45 @@ const fetchBuildingData = async () => {
   }
 };
 
-// Event Handler: Building Click to print details
+// Event Handler: Building Click to print details and change appearance
 const handleBuildingClick = (mapInstance) => {
   mapInstance.on("click", "3d-buildings", (e) => {
     if (!e.features || e.features.length === 0) return;
 
     const clickedBuilding = e.features[0];
     const buildingId = clickedBuilding.properties.osid;
+    const buildingHeight = clickedBuilding.properties.calculatedHeight || getBuildingHeight(clickedBuilding.properties);
 
     if (!buildingId) {
       console.warn("Clicked building has no OS ID.");
       return;
     }
 
-    printBuildingDetails(clickedBuilding);
+    const height = printBuildingDetails(clickedBuilding);
+    
+    // Change the color and height of the clicked building
+    mapInstance.setPaintProperty(
+      "3d-buildings",
+      "fill-extrusion-color",
+      [
+        "case",
+        ["==", ["get", "osid"], buildingId],
+        "#000000", // Black for selected
+        "#51bbd6"  // Blue for others
+      ]
+    );
+
+    // Set height - selected building to full height, others to minimal height
+    mapInstance.setPaintProperty(
+      "3d-buildings",
+      "fill-extrusion-height",
+      [
+        "case",
+        ["==", ["get", "osid"], buildingId],
+        ["get", "calculatedHeight"], // Full height for selected
+        DEFAULT_HEIGHT              // Minimal height for others
+      ]
+    );
   });
 
   // Change cursor on hover
@@ -87,41 +116,6 @@ const handleBuildingClick = (mapInstance) => {
 
   mapInstance.on("mouseleave", "3d-buildings", () => {
     mapInstance.getCanvas().style.cursor = "";
-  });
-};
-
-// Event Handler: Animate building height based on proximity
-const animateBuildings = (mapInstance) => {
-  mapInstance.on("move", () => {
-    const zoom = mapInstance.getZoom();
-    const maxHeight = Math.max(0, (zoom - 15) * 10);
-
-    if (mapInstance.getLayer("3d-buildings")) {
-      mapInstance.setPaintProperty("3d-buildings", "fill-extrusion-height", [
-        "interpolate",
-        ["linear"],
-        [
-          "coalesce",
-          ["get", "relativeheightmaximum"],
-          ["get", "height_relativemax_m"],
-          ["get", "absoluteheightmaximum"],
-          3,
-        ],
-        0,
-        0,
-        20,
-        maxHeight,
-      ]);
-      mapInstance.setPaintProperty("3d-buildings", "fill-extrusion-opacity", [
-        "interpolate",
-        ["linear"],
-        ["zoom"],
-        15,
-        0.2,
-        20,
-        0.8,
-      ]);
-    }
   });
 };
 
@@ -171,21 +165,12 @@ const initializeMap = async (mapContainer, setMap) => {
       source: "dewsbury-buildings",
       paint: {
         "fill-extrusion-color": "#51bbd6",
-        "fill-extrusion-height": [
-          "interpolate",
-          ["linear"],
-          ["zoom"],
-          15,
-          0,
-          20,
-          50,
-        ],
+        "fill-extrusion-height": DEFAULT_HEIGHT, // Start with minimal height for all
         "fill-extrusion-opacity": 0.6,
         "fill-extrusion-vertical-gradient": true,
       },
     });
 
-    animateBuildings(mapInstance);
     handleBuildingClick(mapInstance);
     setMap(mapInstance);
     console.log("3D terrain and building layer added.");
