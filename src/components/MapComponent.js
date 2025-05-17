@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import { MAPBOX_TOKEN, MAP_STYLE } from "../MapBoxConfig";
+import BuildingInfoWindow from "./BuildingInfoWindow";
 import "./MapComponent.css";
 
 mapboxgl.accessToken = MAPBOX_TOKEN;
@@ -18,14 +19,6 @@ const getBuildingHeight = (properties) => {
 
   // Ensure height is valid and within bounds
   return Math.min(Math.max(height, MIN_HEIGHT), MAX_HEIGHT);
-};
-
-// Utility: Print building details to console
-const printBuildingDetails = (building) => {
-  const height = getBuildingHeight(building.properties);
-  console.log(`Selected Building OS ID: ${building.properties.osid}`);
-  console.log(`Building Height: ${height} meters`);
-  return height;
 };
 
 // Fetch building data from multiple files
@@ -55,13 +48,9 @@ const fetchBuildingData = async () => {
           }
         });
         features = [...features, ...data.features];
-        console.log(`Page ${page}: Fetched ${data.features.length} features`);
-      } else {
-        console.warn(`Page ${page} contains no features`);
       }
     }
 
-    console.log("Total Buildings Fetched:", features.length);
     return { type: "FeatureCollection", features };
   } catch (error) {
     console.error("Error fetching building data:", error);
@@ -70,7 +59,7 @@ const fetchBuildingData = async () => {
 };
 
 // Event Handler: Building Click to print details and change appearance
-const handleBuildingClick = (mapInstance) => {
+const handleBuildingClick = (mapInstance, setSelectedBuilding) => {
   mapInstance.on("click", "3d-buildings", (e) => {
     if (!e.features || e.features.length === 0) return;
 
@@ -83,7 +72,7 @@ const handleBuildingClick = (mapInstance) => {
       return;
     }
 
-    const height = printBuildingDetails(clickedBuilding);
+    setSelectedBuilding(clickedBuilding);
     
     // Change the color and height of the clicked building
     mapInstance.setPaintProperty(
@@ -121,7 +110,7 @@ const handleBuildingClick = (mapInstance) => {
 };
 
 // Initialize the map and its layers
-const initializeMap = async (mapContainer, setMap) => {
+const initializeMap = async (mapContainer, setMap, setSelectedBuilding) => {
   const mapInstance = new mapboxgl.Map({
     container: mapContainer.current,
     style: MAP_STYLE,
@@ -172,9 +161,8 @@ const initializeMap = async (mapContainer, setMap) => {
       },
     });
 
-    handleBuildingClick(mapInstance);
+    handleBuildingClick(mapInstance, setSelectedBuilding);
     setMap(mapInstance);
-    console.log("3D terrain and building layer added.");
   });
 
   return mapInstance;
@@ -184,10 +172,11 @@ const initializeMap = async (mapContainer, setMap) => {
 const MapComponent = () => {
   const mapContainer = useRef(null);
   const [map, setMap] = useState(null);
+  const [selectedBuilding, setSelectedBuilding] = useState(null);
 
   useEffect(() => {
     if (!map) {
-      initializeMap(mapContainer, setMap);
+      initializeMap(mapContainer, setMap, setSelectedBuilding);
     }
 
     return () => {
@@ -198,6 +187,7 @@ const MapComponent = () => {
   return (
     <div className="map-container">
       <div ref={mapContainer} className="mapboxgl-map" />
+      <BuildingInfoWindow building={selectedBuilding} />
     </div>
   );
 };
