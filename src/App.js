@@ -1,14 +1,18 @@
-import React from 'react';
-import MapComponent from './components/MapComponent';
-import FeedWindow from './components/FeedWindow';
-import './App.css';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Navbar from "./components/NavBar";
+import LoginPage from "./components/LoginPage";
+import MapComponent from "./components/MapComponent";
 
 function App() {
   return (
-    <div className="App">
-      <MapComponent />
-      <FeedWindow />
-    </div>
+    <Router>
+      <Navbar />
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/" element={<MapComponent />} />
+      </Routes>
+    </Router>
   );
 }
 

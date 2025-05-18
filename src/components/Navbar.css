@@ -3,18 +3,16 @@
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  width: 80%;
-  max-width: 320px;
-  background-color: rgba(0, 0, 0, 0.7); /* Dark, semi-transparent */
+  width: 85%;
+  max-width: 300px;
+  background-color: #1a2750;
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   align-items: center;
-  padding: 6px 10px;
-  border-radius: 25px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+  padding: 8px;
+  border-radius: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   overflow: visible;
-  backdrop-filter: blur(8px);
-
 }
 
 .navbar-logo {
@@ -29,29 +27,28 @@
 }
 
 .logo-image {
-  width: 60px;
-  height: 60px;
+  width: 65px;
+  height: 65px;
   border-radius: 50%;
-
 }
 
 .navbar-icons {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 20px;
+  gap: 25px; /* Increased gap for better spacing */
 }
 
 .icon {
   color: #ccc;
-  font-size: 24px;
+  font-size: 40px; /* Increased font size for more prominence */
   transition: transform 0.2s, color 0.2s, background-color 0.2s;
-  padding: 8px;
+  padding: 10px; /* Adjusted padding for better click area */
   border-radius: 50%;
 }
 
 .icon:hover {
-  transform: scale(1.1);
+  transform: scale(1.2) translateY(-2px); /* Increased scale for a bolder hover effect */
   color: #fff;
   background-color: rgba(255, 255, 255, 0.1);
 }

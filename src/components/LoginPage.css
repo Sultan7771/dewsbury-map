@@ -1,0 +1,87 @@
+/* Background with professional and soft gradient */
+.login-background {
+  background: linear-gradient(135deg, #f4e2d8, #d5c1bb, #b0b1c1, #b0c7d1);
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Login container styling */
+.login-container {
+  background-color: white;
+  border-radius: 16px;
+  padding: 40px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+  animation: fadeIn 0.6s ease-in-out;
+  text-align: center;
+}
+
+/* Logo styling */
+.logo-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.login-logo {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+}
+
+/* Title styling */
+.login-title {
+  font-weight: bold;
+  color: #444;
+}
+
+/* Input fields styling */
+.login-input {
+  margin-bottom: 16px;
+  border-radius: 8px;
+}
+
+.login-input input {
+  padding: 12px;
+}
+
+/* Button styling */
+.login-button {
+  margin-top: 18px;
+  padding: 12px;
+  font-size: 18px;
+  font-weight: bold;
+  background: linear-gradient(135deg, #4b89dc, #7289da);
+  color: white;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.login-button:hover {
+  background: linear-gradient(135deg, #7289da, #4b89dc);
+  transform: translateY(-2px);
+}
+
+/* Footer and link styling */
+.login-footer {
+  margin-top: 18px;
+  font-size: 15px;
+  color: #555;
+}
+
+.signup-link {
+  color: #4b89dc;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.signup-link:hover {
+  text-decoration: underline;
+}
+
+/* Animation for smooth appearance */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
