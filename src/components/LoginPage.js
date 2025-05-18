@@ -1,16 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Box, TextField, Button, Typography, Container } from '@mui/material';
 import './LoginPage.css';
 import { useNavigate } from 'react-router-dom';
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { FIREBASE_AUTH } from "../FirebaseConfig";
+import { AuthContext } from "../AuthContext";
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate();  // Use navigate for redirection
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    console.log("Logging in with", email, password);
+    try {
+      await signInWithEmailAndPassword(FIREBASE_AUTH, email, password);
+      console.log("Logged in successfully!");
+      navigate('/');  // Redirect to map after successful login
+    } catch (error) {
+      console.error("Login failed:", error.message);
+      setError("Invalid email or password. Please try again.");
+    }
   };
 
   return (
@@ -23,6 +35,11 @@ const LoginPage = () => {
           BizMap Login
         </Typography>
         <Box component="form" onSubmit={handleLogin} className="login-form">
+          {error && (
+            <Typography variant="body1" color="error" align="center" gutterBottom>
+              {error}
+            </Typography>
+          )}
           <TextField
             label="Email"
             variant="outlined"
@@ -50,15 +67,16 @@ const LoginPage = () => {
           >
             Log In
           </Button>
-        <Typography align="center" sx={{ mt: 2 }}>
-          Don't have an account?{' '}
-          <span 
-            className="signup-link"
-            onClick={() => navigate('/signup')}
-          >
-            Sign Up
-          </span>
-        </Typography>
+          <Typography align="center" sx={{ mt: 2 }}>
+            Don't have an account?{' '}
+            <span 
+              className="signup-link"
+              onClick={() => navigate('/signup')}
+              style={{ cursor: 'pointer', color: '#1976d2' }}
+            >
+              Sign Up
+            </span>
+          </Typography>
         </Box>
       </Container>
     </div>

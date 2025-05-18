@@ -1,10 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useContext } from "react";
 import mapboxgl from "mapbox-gl";
 import { MAPBOX_TOKEN, MAP_STYLE } from "../MapBoxConfig";
 import BuildingInfoWindow from "./BuildingInfoWindow";
 import "./MapComponent.css";
 import Navbar from "./NavBar";
 import FeedWindow from "./FeedWindow"; // Importing FeedWindow
+import { AuthContext } from "../AuthContext";
 
 mapboxgl.accessToken = MAPBOX_TOKEN;
 
@@ -171,6 +172,7 @@ const initializeMap = async (mapContainer, setMap, setSelectedBuilding) => {
 
 // Main Map Component
 const MapComponent = () => {
+  const { logout } = useContext(AuthContext);
   const mapContainer = useRef(null);
   const [map, setMap] = useState(null);
   const [selectedBuilding, setSelectedBuilding] = useState(null);
