@@ -1,26 +1,18 @@
-import React, { useState } from "react";
-import "./BuildingInfoWindow.css";
+import React from "react";
+import { AiOutlineUser, AiOutlineSearch, AiOutlineTeam } from "react-icons/ai";
+import "./Navbar.css";
 
 const Navbar = () => {
-  const [activeTab, setActiveTab] = useState("Profile");
-
-  const navItems = [
-    { name: "Profile", icon: "🏠" },
-    { name: "Search", icon: "🔍" },
-    { name: "Community", icon: "📬" },
-  ];
-
   return (
     <div className="navbar">
-      {navItems.map((item) => (
-        <div
-          key={item.name}
-          className={`nav-item ${activeTab === item.name ? "active" : ""}`}
-          onClick={() => setActiveTab(item.name)}
-        >
-          <div className="nav-icon">{item.icon}</div>
-        </div>
-      ))}
+      <div className="navbar-logo">
+        <img src="/BizMapLogo.png" alt="BizMap Logo" className="logo-image" />
+      </div>
+      <div className="navbar-icons">
+        <AiOutlineUser size={32} className="icon" />
+        <AiOutlineSearch size={32} className="icon" />
+        <AiOutlineTeam size={32} className="icon" />
+      </div>
     </div>
   );
 };
