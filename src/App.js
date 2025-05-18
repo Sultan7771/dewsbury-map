@@ -5,7 +5,6 @@ import './App.css';
 function App() {
   return (
     <div className="App">
-      <h1>Dewsbury 3D Map</h1>
       <MapComponent />
     </div>
   );
