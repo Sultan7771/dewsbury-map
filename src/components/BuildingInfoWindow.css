@@ -2,10 +2,10 @@
   position: absolute;
   top: 20px;
   right: 20px;
-  background-color: #fff;
+  background-color: #f0eeee;
   border-radius: 10px;
   padding: 15px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px rgba(238, 112, 112, 0.1);
   z-index: 10;
   width: 300px;
   max-height: 400px;
@@ -78,4 +78,68 @@
 
 .info-value {
   color: #333;
+}
+
+/* Compact Navigation Bar */
+.navbar {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70%;
+  max-width: 350px;
+  background-color: #bdbdbd;
+  border-radius: 30px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 8px 0;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.2);
+  z-index: 20;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #aaa;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 5px 8px;
+}
+
+.nav-item.active, .nav-item:hover {
+  color: #ffffff;
+}
+
+.nav-icon {
+  font-size: 22px;
+}
+
+.nav-text {
+  font-size: 10px;
+  margin-top: 2px;
+}
+
+/* Active icon with background */
+.nav-item.active {
+  background-color: #d4d4d4;
+  padding: 6px;
+  border-radius: 50%;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .navbar {
+    width: 80%;
+  }
+
+  .nav-icon {
+    font-size: 20px;
+  }
+
+  .nav-text {
+    font-size: 9px;
+  }
 }

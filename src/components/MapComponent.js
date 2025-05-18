@@ -3,6 +3,7 @@ import mapboxgl from "mapbox-gl";
 import { MAPBOX_TOKEN, MAP_STYLE } from "../MapBoxConfig";
 import BuildingInfoWindow from "./BuildingInfoWindow";
 import "./MapComponent.css";
+import Navbar from "./Navbar";
 
 mapboxgl.accessToken = MAPBOX_TOKEN;
 
@@ -185,9 +186,15 @@ const MapComponent = () => {
   }, [map]);
 
   return (
-    <div className="map-container">
-      <div ref={mapContainer} className="mapboxgl-map" />
-      <BuildingInfoWindow building={selectedBuilding} />
+    <div className="map-container" style={{ position: "relative" }}>
+      <div ref={mapContainer} className="mapboxgl-map" style={{ height: "100vh" }} />
+      {selectedBuilding && (
+        <BuildingInfoWindow
+          building={selectedBuilding}
+          onClose={() => setSelectedBuilding(null)}
+        />
+      )}
+      <Navbar />
     </div>
   );
 };
