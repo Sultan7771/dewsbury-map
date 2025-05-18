@@ -3,7 +3,7 @@ import mapboxgl from "mapbox-gl";
 import { MAPBOX_TOKEN, MAP_STYLE } from "../MapBoxConfig";
 import BuildingInfoWindow from "./BuildingInfoWindow";
 import "./MapComponent.css";
-import Navbar from "./Navbar";
+import Navbar from "./NavBar";
 
 mapboxgl.accessToken = MAPBOX_TOKEN;
 
@@ -66,7 +66,6 @@ const handleBuildingClick = (mapInstance, setSelectedBuilding) => {
 
     const clickedBuilding = e.features[0];
     const buildingId = clickedBuilding.properties.osid;
-    const buildingHeight = clickedBuilding.properties.calculatedHeight || getBuildingHeight(clickedBuilding.properties);
 
     if (!buildingId) {
       console.warn("Clicked building has no OS ID.");
