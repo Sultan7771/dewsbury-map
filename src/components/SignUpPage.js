@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Box, TextField, Button, Typography, Container, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { Box, TextField, Button, Typography, Container, ToggleButton, ToggleButtonGroup, IconButton, Input } from '@mui/material';
 import BusinessIcon from '@mui/icons-material/Business';
 import PersonIcon from '@mui/icons-material/Person';
+import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import './SignUpPage.css';
 
 const SignUpPage = () => {
@@ -10,13 +11,25 @@ const SignUpPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [userType, setUserType] = useState('');
+  const [logo, setLogo] = useState(null);
+  const [businessName, setBusinessName] = useState('');
+  const [contact, setContact] = useState('');
+  const [address, setAddress] = useState('');
+  const [industry, setIndustry] = useState('');
+  const [link, setLink] = useState('');
 
-  const handleNext = () => {
-    setPage(2);
-  };
+const handleNext = () => {
+  if (page === 2 && userType === "individual") {
+    // Skip the business details page if the user is an individual
+    setPage(page + 2);
+  } else {
+    setPage(page + 1);
+  }
+};
+
 
   const handleBack = () => {
-    setPage(1);
+    setPage(page - 1);
   };
 
   const handleUserTypeChange = (event, newType) => {
@@ -25,9 +38,13 @@ const SignUpPage = () => {
     }
   };
 
+  const handleLogoUpload = (e) => {
+    setLogo(e.target.files[0]);
+  };
+
   const handleSignUp = (e) => {
     e.preventDefault();
-    console.log("Signing up with", name, email, password, userType);
+    console.log("Signing up with", { name, email, password, userType, businessName, contact, address, industry, link });
   };
 
   return (
@@ -37,9 +54,10 @@ const SignUpPage = () => {
           <img src="/BizMapLogo.png" alt="BizMap Logo" className="signup-logo" />
         </div>
         <Typography variant="h4" className="signup-title" gutterBottom>
-          {page === 1 ? "Create Your BizMap Account" : "Choose Your Profile"}
+          {page === 1 ? "Create Your BizMap Account" : page === 2 ? "Choose Your Profile" : "Business Details"}
         </Typography>
-        {page === 1 ? (
+
+        {page === 1 && (
           <Box component="form" onSubmit={handleNext} sx={{ mt: 2 }}>
             <TextField
               label="Name"
@@ -66,19 +84,14 @@ const SignUpPage = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <Button
-              type="button"
-              variant="contained"
-              color="primary"
-              fullWidth
-              className="signup-button"
-              onClick={handleNext}
-            >
+            <Button variant="contained" color="primary" fullWidth className="signup-button" onClick={handleNext}>
               Next
             </Button>
           </Box>
-        ) : (
-          <Box component="form" onSubmit={handleSignUp} sx={{ mt: 2 }}>
+        )}
+
+        {page === 2 && (
+          <Box component="form" sx={{ mt: 2 }}>
             <Typography variant="h6" gutterBottom>
               Are you a business or an individual?
             </Typography>
@@ -99,23 +112,74 @@ const SignUpPage = () => {
                 Individual
               </ToggleButton>
             </ToggleButtonGroup>
+            <Button variant="contained" color="primary" fullWidth className="signup-button" onClick={handleNext}>
+              Next
+            </Button>
+            <Button variant="outlined" color="secondary" fullWidth className="signup-button" onClick={handleBack}>
+              Back
+            </Button>
+          </Box>
+        )}
+
+        {page === 3 && userType === "business" && (
+          <Box component="form" onSubmit={handleSignUp} sx={{ mt: 2 }}>
+            <Typography variant="h6" gutterBottom>
+              Business Details
+            </Typography>
             <Button
-              type="submit"
               variant="contained"
-              color="primary"
+              component="label"
               fullWidth
-              className="signup-button"
+              startIcon={<PhotoCamera />}
+              sx={{ mb: 2 }}
             >
+              Upload Logo
+              <input type="file" hidden onChange={handleLogoUpload} />
+            </Button>
+            <TextField
+              label="Business Name"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              value={businessName}
+              onChange={(e) => setBusinessName(e.target.value)}
+            />
+            <TextField
+              label="Contact"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              value={contact}
+              onChange={(e) => setContact(e.target.value)}
+            />
+            <TextField
+              label="Address"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+            />
+            <TextField
+              label="Industry"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              value={industry}
+              onChange={(e) => setIndustry(e.target.value)}
+            />
+            <TextField
+              label="Website/Link"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              value={link}
+              onChange={(e) => setLink(e.target.value)}
+            />
+            <Button variant="contained" color="primary" fullWidth className="signup-button" type="submit">
               Sign Up
             </Button>
-            <Button
-              variant="outlined"
-              color="secondary"
-              fullWidth
-              className="signup-button"
-              onClick={handleBack}
-              sx={{ mt: 1 }}
-            >
+            <Button variant="outlined" color="secondary" fullWidth className="signup-button" onClick={handleBack}>
               Back
             </Button>
           </Box>
