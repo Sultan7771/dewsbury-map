@@ -1,20 +1,33 @@
-/* Background with soft professional gradient */
+/* Background with professional and soft gradient for SignUp */
 .signup-background {
-  background: linear-gradient(135deg, #f4e2d8, #d5c1bb, #b0b1c1, #b0c7d1);
+  background: linear-gradient(145deg, #f2d3b2, #d0c4b1, #b5c9d6, #a8b8ce);
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-/* Sign-up container */
+/* SignUp container styling */
 .signup-container {
   background-color: white;
   border-radius: 16px;
-  padding: 30px;
+  padding: 40px;
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
   animation: fadeIn 0.6s ease-in-out;
   text-align: center;
+}
+
+/* Logo styling */
+.signup-logo-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.signup-logo {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
 }
 
 /* Title styling */
@@ -23,38 +36,51 @@
   color: #444;
 }
 
-/* Input and button styling */
-.signup-form {
-  margin-top: 20px;
+/* Input fields styling */
+.signup-input {
+  margin-bottom: 16px;
+  border-radius: 8px;
 }
 
-.signup-button, .back-button {
-  margin-top: 15px;
+.signup-input input {
+  padding: 12px;
+}
+
+/* Button styling */
+.signup-button {
+  margin-top: 18px;
   padding: 12px;
   font-size: 18px;
   font-weight: bold;
-  background: linear-gradient(135deg, #4b89dc, #7289da);
+  background: linear-gradient(145deg, #4a90e2, #72b3e2);
   color: white;
-  border-radius: 8px;
+  border-radius: 10px;
   transition: all 0.3s ease;
 }
 
-.signup-button:hover, .back-button:hover {
-  background: linear-gradient(135deg, #7289da, #4b89dc);
+.signup-button:hover {
+  background: linear-gradient(145deg, #72b3e2, #4a90e2);
   transform: translateY(-2px);
 }
 
-/* User type radio buttons */
-.user-type-label {
-  margin: 20px 0 10px;
+/* Footer and link styling */
+.signup-footer {
+  margin-top: 18px;
+  font-size: 15px;
   color: #555;
 }
 
-.user-type-group {
-  display: flex;
-  justify-content: space-around;
+.login-link {
+  color: #4a90e2;
+  font-weight: bold;
+  text-decoration: none;
 }
 
+.login-link:hover {
+  text-decoration: underline;
+}
+
+/* Animation for smooth appearance */
 @keyframes fadeIn {
   from { opacity: 0; transform: scale(0.9); }
   to { opacity: 1; transform: scale(1); }
