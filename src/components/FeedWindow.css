@@ -1,0 +1,62 @@
+.feed-window {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 300px;
+  max-height: 400px;
+  overflow-y: auto;
+  background-color: #f0eeee;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+/* Hide scroll bars */
+.feed-window::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+.feed-title {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.feed-item {
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: #ffffff;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.feed-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.business-logo img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.business-info h4 {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.timestamp {
+  font-size: 0.8rem;
+  color: #777;
+}
+
+.feed-content p {
+  margin: 5px 0;
+}
+
+.post-image img {
+  width: 100%;
+  border-radius: 5px;
+}
