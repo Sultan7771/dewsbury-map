@@ -2,41 +2,80 @@
   position: absolute;
   top: 20px;
   right: 20px;
-  width: 250px;
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-  z-index: 1000;
-  font-family: 'Arial', sans-serif;
-  overflow: hidden;
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  width: 300px;
+  max-height: 400px;
+  overflow-y: auto;
 }
 
 .building-info-header {
-  background: #2c3e50;
-  color: white;
-  padding: 12px 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.building-info-header h3 {
-  margin: 0;
-  font-size: 16px;
+.logo-circle {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: #f28cb1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+}
+
+.header-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.tab-menu {
+  display: flex;
+  justify-content: space-around;
+  margin: 10px 0;
+}
+
+.tab {
+  cursor: pointer;
+  padding: 8px 12px;
+  margin: 0 5px;
+  border-radius: 5px;
+}
+
+.tab.active-tab {
+  background-color: #51bbd6;
+  color: #fff;
+}
+
+.section {
+  margin: 10px 0;
 }
 
 .building-info-content {
   padding: 15px;
 }
 
+.section {
+  margin-bottom: 10px;
+}
+
+
 .info-row {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 10px;
+  margin: 5px 0;
 }
 
 .info-label {
   font-weight: bold;
-  color: #333;
+  color: #555;
 }
 
 .info-value {
-  color: #2c3e50;
+  color: #333;
 }
