@@ -1,0 +1,61 @@
+/* Background with soft professional gradient */
+.signup-background {
+  background: linear-gradient(135deg, #f4e2d8, #d5c1bb, #b0b1c1, #b0c7d1);
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Sign-up container */
+.signup-container {
+  background-color: white;
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+  animation: fadeIn 0.6s ease-in-out;
+  text-align: center;
+}
+
+/* Title styling */
+.signup-title {
+  font-weight: bold;
+  color: #444;
+}
+
+/* Input and button styling */
+.signup-form {
+  margin-top: 20px;
+}
+
+.signup-button, .back-button {
+  margin-top: 15px;
+  padding: 12px;
+  font-size: 18px;
+  font-weight: bold;
+  background: linear-gradient(135deg, #4b89dc, #7289da);
+  color: white;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.signup-button:hover, .back-button:hover {
+  background: linear-gradient(135deg, #7289da, #4b89dc);
+  transform: translateY(-2px);
+}
+
+/* User type radio buttons */
+.user-type-label {
+  margin: 20px 0 10px;
+  color: #555;
+}
+
+.user-type-group {
+  display: flex;
+  justify-content: space-around;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}

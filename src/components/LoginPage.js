@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { Box, TextField, Button, Typography, Container } from '@mui/material';
 import './LoginPage.css';
+import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();  // Use navigate for redirection
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -48,9 +50,15 @@ const LoginPage = () => {
           >
             Log In
           </Button>
-          <Typography align="center" className="login-footer">
-            Don't have an account? <a href="/signup" className="signup-link">Sign Up</a>
-          </Typography>
+        <Typography align="center" sx={{ mt: 2 }}>
+          Don't have an account?{' '}
+          <span 
+            className="signup-link"
+            onClick={() => navigate('/signup')}
+          >
+            Sign Up
+          </span>
+        </Typography>
         </Box>
       </Container>
     </div>
