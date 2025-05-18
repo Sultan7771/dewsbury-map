@@ -4,9 +4,10 @@ import Navbar from "./components/NavBar";
 import LoginPage from "./components/LoginPage";
 import MapComponent from "./components/MapComponent";
 import SignUpPage from "./components/SignUpPage";
+import BusinessProfile from "./components/BusinessProfile";  // Import the profile page
 import { AuthContext } from "./AuthContext";
 
-// PrivateRoute Component to protect the map page
+// PrivateRoute Component to protect authenticated pages
 const PrivateRoute = ({ children }) => {
   const { user } = useContext(AuthContext);
   return user ? children : <Navigate to="/login" />;
@@ -17,15 +18,24 @@ function App() {
   const location = useLocation();
   const { user } = useContext(AuthContext);
 
-  // Check if the current path is the root (MapComponent) and user is authenticated
-  const isMapPage = location.pathname === "/" && user;
+  // Show the Navbar only when the user is logged in
+  const isAuthenticated = !!user;
+  const isMapPage = location.pathname === "/";
 
   return (
     <div>
-      {isMapPage && <Navbar />}
+      {isAuthenticated && <Navbar />}
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />
+        <Route
+          path="/profile"
+          element={
+            <PrivateRoute>
+              <BusinessProfile />
+            </PrivateRoute>
+          }
+        />
         <Route
           path="/"
           element={

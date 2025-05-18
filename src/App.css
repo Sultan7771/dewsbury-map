@@ -28,3 +28,7 @@
   padding: 15px;
 }
 
+.MuiDrawer-paper {
+  background-color: #fff;
+  box-shadow: -3px 0px 6px rgba(0, 0, 0, 0.1);
+}
