@@ -66,6 +66,25 @@ const fetchBuildingData = async () => {
   }
 };
 
+const calculateCentroid = (coordinates) => {
+  let lngSum = 0;
+  let latSum = 0;
+  const points = coordinates[0];
+
+  points.forEach(([lng, lat]) => {
+    lngSum += lng;
+    latSum += lat;
+  });
+
+  const centroid = [
+    lngSum / points.length, // Average longitude
+    latSum / points.length  // Average latitude
+  ];
+
+  return centroid;
+};
+
+
 // Function to add a marker as a symbol layer
 const addBuildingMarker = (mapInstance, coordinates) => {
   // Remove the existing marker layer if it exists
@@ -96,15 +115,14 @@ const addBuildingMarker = (mapInstance, coordinates) => {
     type: "symbol",
     source: "building-marker",
     layout: {
-      "icon-image": "custom-marker",    // Use the custom marker image
-      "icon-size": 0.1,                 // Adjust size to be more proportional
-      "icon-anchor": "center",          // Center the icon
-      "icon-offset": [0, -5],          // Slightly raise above the building
-      "icon-allow-overlap": true,       // Ensure it stays on top of buildings
+      "icon-image": "custom-marker", // Use the custom marker image
+      "icon-size": 0.1, // Adjust size to be more proportional
+      "icon-anchor": "center", // Center the icon
+      "icon-offset": [0, -5], // Slightly raise above the building
+      "icon-allow-overlap": true, // Ensure it stays on top of buildings
     },
   });
 };
-
 
 // Event Handler: Building Click
 const handleBuildingClick = (mapInstance, setSelectedBuilding) => {
@@ -137,12 +155,11 @@ const handleBuildingClick = (mapInstance, setSelectedBuilding) => {
     mapInstance.setPaintProperty("3d-buildings", "fill-extrusion-height", [
       "case",
       ["==", ["get", "osid"], buildingId],
-      ["get", "calculatedHeight"], 
-      ["get", "defaultHeight"], 
+      ["get", "calculatedHeight"],
+      ["get", "defaultHeight"],
     ]);
   });
 };
-
 
 // Initialize the map and its layers
 const initializeMap = async (mapContainer, setMap, setSelectedBuilding) => {
@@ -170,9 +187,9 @@ const initializeMap = async (mapContainer, setMap, setSelectedBuilding) => {
       (error, image) => {
         if (error) throw error;
         if (!mapInstance.hasImage("custom-marker")) {
-          mapInstance.addImage("custom-marker", image, { 
-            sdf: false,       // Set to false for non-SVG images
-            pixelRatio: 2.0,  // Adjust ratio for better sharpness
+          mapInstance.addImage("custom-marker", image, {
+            sdf: false, // Set to false for non-SVG images
+            pixelRatio: 2.0, // Adjust ratio for better sharpness
           });
           console.log("Custom marker image added successfully.");
         }
@@ -204,10 +221,42 @@ const initializeMap = async (mapContainer, setMap, setSelectedBuilding) => {
       type: "fill-extrusion",
       source: "dewsbury-buildings",
       paint: {
-        "fill-extrusion-color": "#51bbd6",
-        "fill-extrusion-height": ["get", "defaultHeight"],
-        "fill-extrusion-opacity": 0.6,
+        // Base color for the buildings
+        "fill-extrusion-color": [
+          "case",
+          ["boolean", ["feature-state", "hover"], false],
+          "#e1c400", // Highlighted building color
+          "#51bbd6", // Default building color
+        ],
+
+        // Add a gradient for realistic shading (darker at the base)
+        "fill-extrusion-base": 0,
+        "fill-extrusion-height": ["get", "calculatedHeight"],
+        "fill-extrusion-opacity": 0.75,
         "fill-extrusion-vertical-gradient": true,
+
+        // Add a shadow effect by adjusting light intensity and direction
+        "fill-extrusion-ambient-occlusion": [
+          "interpolate",
+          ["linear"],
+          ["get", "calculatedHeight"],
+          0,
+          0.3, // Low height = low shadow intensity
+          50,
+          0.1, // High height = high shadow intensity
+        ],
+        "fill-extrusion-light-intensity": 0.6,
+
+        // Edge highlighting using color and light direction
+        "fill-extrusion-outline-color": [
+          "interpolate",
+          ["linear"],
+          ["get", "calculatedHeight"],
+          0,
+          "#333333", // Darker edges at the base
+          50,
+          "#999999", // Lighter edges at the top
+        ],
       },
     });
 
@@ -217,9 +266,6 @@ const initializeMap = async (mapContainer, setMap, setSelectedBuilding) => {
 
   return mapInstance;
 };
-
-
-
 
 // Main Map Component
 const MapComponent = () => {
@@ -246,7 +292,11 @@ const MapComponent = () => {
 
   return (
     <div className="map-container">
-      <div ref={mapContainer} className="mapboxgl-map" style={{ height: "100vh" }} />
+      <div
+        ref={mapContainer}
+        className="mapboxgl-map"
+        style={{ height: "100vh" }}
+      />
       {selectedBuilding && (
         <BuildingInfoWindow
           building={selectedBuilding}
@@ -267,4 +317,3 @@ const MapComponent = () => {
 };
 
 export default MapComponent;
-
