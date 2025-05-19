@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
-import { Typography, Box, Button } from "@mui/material";
+import { Typography, Box, Button, CircularProgress } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../AuthContext";
 import { FIRESTORE_DB } from "../FirebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
@@ -7,6 +8,7 @@ import { doc, getDoc } from "firebase/firestore";
 const BusinessProfile = () => {
   const { user } = useContext(AuthContext);
   const [profileData, setProfileData] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -34,7 +36,12 @@ const BusinessProfile = () => {
     fetchProfileData();
   }, [user]);
 
-  if (!profileData) return <Typography>Loading profile...</Typography>;
+  if (!profileData) return (
+    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+      <CircularProgress />
+      <Typography sx={{ marginLeft: 2 }}>Loading profile...</Typography>
+    </Box>
+  );
 
   return (
     <Box sx={{ padding: 3 }}>
@@ -54,7 +61,11 @@ const BusinessProfile = () => {
           <img src={profileData.logoUrl} alt="Business Logo" style={{ width: 100, height: 100, borderRadius: 8 }} />
         </Box>
       )}
-      <Button variant="outlined" sx={{ marginTop: 2 }} onClick={() => alert("Profile settings coming soon!")}>
+      <Button 
+        variant="outlined" 
+        sx={{ marginTop: 2 }} 
+        onClick={() => navigate("/edit-profile")}
+      >
         Edit Profile
       </Button>
     </Box>

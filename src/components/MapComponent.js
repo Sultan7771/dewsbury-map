@@ -6,11 +6,12 @@ import "./MapComponent.css";
 import Navbar from "./NavBar";
 import FeedWindow from "./FeedWindow"; // Importing FeedWindow
 import { AuthContext } from "../AuthContext";
+import ProfileWindow from "./ProfileWindow"; // Importing ProfileWindow
 
 mapboxgl.accessToken = MAPBOX_TOKEN;
 
-const MAX_HEIGHT = 50;   // Maximum building height to avoid overflow
-const MIN_HEIGHT = 5;    // Minimum height to keep buildings visible
+const MAX_HEIGHT = 50; // Maximum building height to avoid overflow
+const MIN_HEIGHT = 5; // Minimum height to keep buildings visible
 
 // Utility: Get building height from OS data properties
 const getBuildingHeight = (properties) => {
@@ -43,9 +44,12 @@ const fetchBuildingData = async () => {
           if (feature.properties.osid) {
             feature.id = feature.properties.osid;
             // Store the calculated height in properties for easy access
-            feature.properties.calculatedHeight = getBuildingHeight(feature.properties);
+            feature.properties.calculatedHeight = getBuildingHeight(
+              feature.properties
+            );
             // Store 10% height for default display
-            feature.properties.defaultHeight = feature.properties.calculatedHeight * 0.1;
+            feature.properties.defaultHeight =
+              feature.properties.calculatedHeight * 0.1;
           } else {
             console.warn("Building without OS ID:", feature);
           }
@@ -75,30 +79,22 @@ const handleBuildingClick = (mapInstance, setSelectedBuilding) => {
     }
 
     setSelectedBuilding(clickedBuilding);
-    
+
     // Change the color and height of the clicked building
-    mapInstance.setPaintProperty(
-      "3d-buildings",
-      "fill-extrusion-color",
-      [
-        "case",
-        ["==", ["get", "osid"], buildingId],
-        "#000000", // Black for selected
-        "#51bbd6"  // Blue for others
-      ]
-    );
+    mapInstance.setPaintProperty("3d-buildings", "fill-extrusion-color", [
+      "case",
+      ["==", ["get", "osid"], buildingId],
+      "#000000", // Black for selected
+      "#51bbd6", // Blue for others
+    ]);
 
     // Set height - selected building to full height, others to 10% height
-    mapInstance.setPaintProperty(
-      "3d-buildings",
-      "fill-extrusion-height",
-      [
-        "case",
-        ["==", ["get", "osid"], buildingId],
-        ["get", "calculatedHeight"], // Full height for selected
-        ["get", "defaultHeight"]    // 10% height for others
-      ]
-    );
+    mapInstance.setPaintProperty("3d-buildings", "fill-extrusion-height", [
+      "case",
+      ["==", ["get", "osid"], buildingId],
+      ["get", "calculatedHeight"], // Full height for selected
+      ["get", "defaultHeight"], // 10% height for others
+    ]);
   });
 
   // Change cursor on hover
@@ -176,6 +172,7 @@ const MapComponent = () => {
   const mapContainer = useRef(null);
   const [map, setMap] = useState(null);
   const [selectedBuilding, setSelectedBuilding] = useState(null);
+  const [showProfile, setShowProfile] = useState(false); // Correctly define showProfile state
 
   useEffect(() => {
     if (!map) {
@@ -186,6 +183,10 @@ const MapComponent = () => {
       if (map) map.remove();
     };
   }, [map]);
+
+  const toggleProfile = () => {
+    setShowProfile((prev) => !prev);
+  };
 
   return (
     <div className="map-container">
@@ -199,7 +200,12 @@ const MapComponent = () => {
       <div className="feed-window-wrapper">
         <FeedWindow />
       </div>
-      <Navbar />
+      {showProfile && (
+        <div className="profile-window-wrapper">
+          <ProfileWindow onClose={toggleProfile} />
+        </div>
+      )}
+      <Navbar toggleProfile={toggleProfile} />
     </div>
   );
 };
