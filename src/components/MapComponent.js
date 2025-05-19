@@ -84,8 +84,8 @@ const handleBuildingClick = (mapInstance, setSelectedBuilding) => {
     mapInstance.setPaintProperty("3d-buildings", "fill-extrusion-color", [
       "case",
       ["==", ["get", "osid"], buildingId],
-      "#000000", // Black for selected
-      "#51bbd6", // Blue for others
+      "#e1c400", // Vibrant dark teal for the selected building
+      "#5cbeed", // Light blue-gray for other buildings
     ]);
 
     // Set height - selected building to full height, others to 10% height
@@ -190,7 +190,11 @@ const MapComponent = () => {
 
   return (
     <div className="map-container">
-      <div ref={mapContainer} className="mapboxgl-map" style={{ height: "100vh" }} />
+      <div
+        ref={mapContainer}
+        className="mapboxgl-map"
+        style={{ height: "100vh" }}
+      />
       {selectedBuilding && (
         <BuildingInfoWindow
           building={selectedBuilding}
