@@ -65,13 +65,14 @@ const fetchBuildingData = async () => {
   }
 };
 
-// Event Handler: Building Click to print details and change appearance
-const handleBuildingClick = (mapInstance, setSelectedBuilding) => {
+// Event Handler: Building Click to display a custom marker on top
+const handleBuildingClick = (mapInstance, setSelectedBuilding, markerRef) => {
   mapInstance.on("click", "3d-buildings", (e) => {
     if (!e.features || e.features.length === 0) return;
 
     const clickedBuilding = e.features[0];
     const buildingId = clickedBuilding.properties.osid;
+    const coordinates = clickedBuilding.geometry.coordinates[0][0];
 
     if (!buildingId) {
       console.warn("Clicked building has no OS ID.");
@@ -79,6 +80,27 @@ const handleBuildingClick = (mapInstance, setSelectedBuilding) => {
     }
 
     setSelectedBuilding(clickedBuilding);
+
+    // Remove existing marker if present
+    if (markerRef && markerRef.current) {
+      markerRef.current.remove();
+    }
+
+    // Create a new marker with the custom icon
+    const el = document.createElement("div");
+    el.className = "jobs-marker";
+    el.style.backgroundImage = "url(/icons/jobs_marker.png)";
+    el.style.width = "40px";
+    el.style.height = "40px";
+    el.style.backgroundSize = "contain";
+
+    // Place the marker at the center of the building's roof
+    const marker = new mapboxgl.Marker(el)
+      .setLngLat(coordinates)
+      .addTo(mapInstance);
+
+    // Save marker reference to remove later
+    markerRef.current = marker;
 
     // Change the color and height of the clicked building
     mapInstance.setPaintProperty("3d-buildings", "fill-extrusion-color", [
@@ -107,8 +129,8 @@ const handleBuildingClick = (mapInstance, setSelectedBuilding) => {
   });
 };
 
-// Initialize the map and its layers
-const initializeMap = async (mapContainer, setMap, setSelectedBuilding) => {
+
+const initializeMap = async (mapContainer, setMap, setSelectedBuilding, markerRef) => {
   const mapInstance = new mapboxgl.Map({
     container: mapContainer.current,
     style: MAP_STYLE,
@@ -153,18 +175,20 @@ const initializeMap = async (mapContainer, setMap, setSelectedBuilding) => {
       source: "dewsbury-buildings",
       paint: {
         "fill-extrusion-color": "#51bbd6",
-        "fill-extrusion-height": ["get", "defaultHeight"], // Start with 10% height for all
+        "fill-extrusion-height": ["get", "defaultHeight"],
         "fill-extrusion-opacity": 0.6,
         "fill-extrusion-vertical-gradient": true,
       },
     });
 
-    handleBuildingClick(mapInstance, setSelectedBuilding);
+    // Pass the markerRef correctly
+    handleBuildingClick(mapInstance, setSelectedBuilding, markerRef);
     setMap(mapInstance);
   });
 
   return mapInstance;
 };
+
 
 // Main Map Component
 const MapComponent = () => {
@@ -172,11 +196,12 @@ const MapComponent = () => {
   const mapContainer = useRef(null);
   const [map, setMap] = useState(null);
   const [selectedBuilding, setSelectedBuilding] = useState(null);
-  const [showProfile, setShowProfile] = useState(false); // Correctly define showProfile state
+  const [showProfile, setShowProfile] = useState(false);
+  const markerRef = useRef(null); // Initialize marker reference
 
   useEffect(() => {
     if (!map) {
-      initializeMap(mapContainer, setMap, setSelectedBuilding);
+      initializeMap(mapContainer, setMap, setSelectedBuilding, markerRef); // Pass markerRef
     }
 
     return () => {
@@ -190,11 +215,7 @@ const MapComponent = () => {
 
   return (
     <div className="map-container">
-      <div
-        ref={mapContainer}
-        className="mapboxgl-map"
-        style={{ height: "100vh" }}
-      />
+      <div ref={mapContainer} className="mapboxgl-map" style={{ height: "100vh" }} />
       {selectedBuilding && (
         <BuildingInfoWindow
           building={selectedBuilding}
@@ -215,3 +236,4 @@ const MapComponent = () => {
 };
 
 export default MapComponent;
+
