@@ -7,6 +7,7 @@ import Navbar from "./NavBar";
 import FeedWindow from "./FeedWindow"; // Importing FeedWindow
 import { AuthContext } from "../AuthContext";
 import ProfileWindow from "./ProfileWindow"; // Importing ProfileWindow
+import createCustomMarker from "../assets/ReactMarker"; // Import the custom marker
 
 mapboxgl.accessToken = MAPBOX_TOKEN;
 
@@ -65,8 +66,48 @@ const fetchBuildingData = async () => {
   }
 };
 
-// Event Handler: Building Click to display a custom marker on top
-const handleBuildingClick = (mapInstance, setSelectedBuilding, markerRef) => {
+// Function to add a marker as a symbol layer
+const addBuildingMarker = (mapInstance, coordinates) => {
+  // Remove the existing marker layer if it exists
+  if (mapInstance.getLayer("building-marker")) {
+    mapInstance.removeLayer("building-marker");
+    mapInstance.removeSource("building-marker");
+  }
+
+  // Add the marker as a symbol layer
+  mapInstance.addSource("building-marker", {
+    type: "geojson",
+    data: {
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          geometry: {
+            type: "Point",
+            coordinates: coordinates,
+          },
+        },
+      ],
+    },
+  });
+
+  mapInstance.addLayer({
+    id: "building-marker",
+    type: "symbol",
+    source: "building-marker",
+    layout: {
+      "icon-image": "custom-marker",    // Use the custom marker image
+      "icon-size": 0.1,                 // Adjust size to be more proportional
+      "icon-anchor": "center",          // Center the icon
+      "icon-offset": [0, -5],          // Slightly raise above the building
+      "icon-allow-overlap": true,       // Ensure it stays on top of buildings
+    },
+  });
+};
+
+
+// Event Handler: Building Click
+const handleBuildingClick = (mapInstance, setSelectedBuilding) => {
   mapInstance.on("click", "3d-buildings", (e) => {
     if (!e.features || e.features.length === 0) return;
 
@@ -81,56 +122,30 @@ const handleBuildingClick = (mapInstance, setSelectedBuilding, markerRef) => {
 
     setSelectedBuilding(clickedBuilding);
 
-    // Remove existing marker if present
-    if (markerRef && markerRef.current) {
-      markerRef.current.remove();
-    }
-
-    // Create a new marker with the custom icon
-    const el = document.createElement("div");
-    el.className = "jobs-marker";
-    el.style.backgroundImage = "url(/icons/jobs_marker.png)";
-    el.style.width = "40px";
-    el.style.height = "40px";
-    el.style.backgroundSize = "contain";
-
-    // Place the marker at the center of the building's roof
-    const marker = new mapboxgl.Marker(el)
-      .setLngLat(coordinates)
-      .addTo(mapInstance);
-
-    // Save marker reference to remove later
-    markerRef.current = marker;
+    // Add a marker as a symbol layer on top of the building
+    addBuildingMarker(mapInstance, coordinates);
 
     // Change the color and height of the clicked building
     mapInstance.setPaintProperty("3d-buildings", "fill-extrusion-color", [
       "case",
       ["==", ["get", "osid"], buildingId],
-      "#e1c400", // Vibrant dark teal for the selected building
-      "#5cbeed", // Light blue-gray for other buildings
+      "#e1c400", // Selected color
+      "#5cbeed", // Default color
     ]);
 
     // Set height - selected building to full height, others to 10% height
     mapInstance.setPaintProperty("3d-buildings", "fill-extrusion-height", [
       "case",
       ["==", ["get", "osid"], buildingId],
-      ["get", "calculatedHeight"], // Full height for selected
-      ["get", "defaultHeight"], // 10% height for others
+      ["get", "calculatedHeight"], 
+      ["get", "defaultHeight"], 
     ]);
-  });
-
-  // Change cursor on hover
-  mapInstance.on("mouseenter", "3d-buildings", () => {
-    mapInstance.getCanvas().style.cursor = "pointer";
-  });
-
-  mapInstance.on("mouseleave", "3d-buildings", () => {
-    mapInstance.getCanvas().style.cursor = "";
   });
 };
 
 
-const initializeMap = async (mapContainer, setMap, setSelectedBuilding, markerRef) => {
+// Initialize the map and its layers
+const initializeMap = async (mapContainer, setMap, setSelectedBuilding) => {
   const mapInstance = new mapboxgl.Map({
     container: mapContainer.current,
     style: MAP_STYLE,
@@ -149,6 +164,21 @@ const initializeMap = async (mapContainer, setMap, setSelectedBuilding, markerRe
   mapInstance.touchZoomRotate.enable();
 
   mapInstance.on("load", async () => {
+    // Load the custom marker image correctly
+    mapInstance.loadImage(
+      "/icons/jobs_marker.png", // Path to your marker image
+      (error, image) => {
+        if (error) throw error;
+        if (!mapInstance.hasImage("custom-marker")) {
+          mapInstance.addImage("custom-marker", image, { 
+            sdf: false,       // Set to false for non-SVG images
+            pixelRatio: 2.0,  // Adjust ratio for better sharpness
+          });
+          console.log("Custom marker image added successfully.");
+        }
+      }
+    );
+
     mapInstance.addSource("mapbox-dem", {
       type: "raster-dem",
       url: "mapbox://mapbox.terrain-rgb",
@@ -181,13 +211,14 @@ const initializeMap = async (mapContainer, setMap, setSelectedBuilding, markerRe
       },
     });
 
-    // Pass the markerRef correctly
-    handleBuildingClick(mapInstance, setSelectedBuilding, markerRef);
+    handleBuildingClick(mapInstance, setSelectedBuilding);
     setMap(mapInstance);
   });
 
   return mapInstance;
 };
+
+
 
 
 // Main Map Component
