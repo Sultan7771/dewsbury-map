@@ -1,4 +1,3 @@
-import { addBuildingMarker } from "./addBuildingMarker";
 
 export const handleBuildingClick = (mapInstance, setSelectedBuilding) => {
   mapInstance.on("click", "3d-buildings", (e) => {
@@ -11,7 +10,6 @@ export const handleBuildingClick = (mapInstance, setSelectedBuilding) => {
     if (!buildingId) return;
 
     setSelectedBuilding(clickedBuilding);
-    addBuildingMarker(mapInstance, coordinates);
 
     mapInstance.setPaintProperty("3d-buildings", "fill-extrusion-color", [
       "case",
