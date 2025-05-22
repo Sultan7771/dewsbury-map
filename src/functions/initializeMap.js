@@ -82,17 +82,7 @@ export const initializeMap = async (mapContainer, setMap, setSelectedBuilding) =
         ]
       }
     });
-
-    mapInstance.addLayer({
-      id: "grass-layer",
-      type: "fill",
-      source: "grass-areas",
-      paint: {
-        "fill-color": "#39d353",
-        "fill-opacity": 0.6
-      }
-    });
-
+    
     const data = await fetchBuildingData();
     if (!data || !data.features || data.features.length === 0) {
       console.error("🚫 No building data available.");
