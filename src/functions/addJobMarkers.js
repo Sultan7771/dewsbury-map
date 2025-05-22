@@ -74,7 +74,7 @@ export const addJobMarkers = async (map, buildingFeatures) => {
             source: markerSourceId,
             layout: {
                 "icon-image": "custom-marker",
-                "icon-size": 0.1,
+                "icon-size": 0.05,
                 "icon-anchor": "center",
                 "icon-offset": [0, -5],
                 "icon-allow-overlap": true,

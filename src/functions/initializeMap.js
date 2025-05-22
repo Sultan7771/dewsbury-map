@@ -82,7 +82,7 @@ export const initializeMap = async (mapContainer, setMap, setSelectedBuilding) =
         ]
       }
     });
-    
+
     const data = await fetchBuildingData();
     if (!data || !data.features || data.features.length === 0) {
       console.error("🚫 No building data available.");
@@ -101,9 +101,20 @@ export const initializeMap = async (mapContainer, setMap, setSelectedBuilding) =
       paint: {
         "fill-extrusion-color": [
           "case",
-          ["==", ["get", "selected"], true], "#ffd700",        // Gold highlight
-          ["==", ["get", "hasJobs"], true], "#66e4c9",         // Vibrant teal (jobs)
-          "#e4e7eb"                                            // Soft modern grey
+          // Selected & has jobs → teal highlight
+          ["all", ["==", ["get", "selected"], true], ["==", ["get", "hasJobs"], true]],
+          "#00c7b1",
+
+          // Selected but no jobs → light gray highlight
+          ["all", ["==", ["get", "selected"], true], ["!=", ["get", "hasJobs"], true]],
+          "#ebebeb",
+
+          // Not selected but has jobs → base teal
+          ["==", ["get", "hasJobs"], true],
+          "#66e4c9",
+
+          // All others → soft grey
+          "#e4e7eb"
         ],
         "fill-extrusion-height": [
           "case",
