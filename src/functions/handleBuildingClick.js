@@ -1,3 +1,6 @@
+// Handles building selection logic
+// File: handleBuildingClick.js
+
 let lastSelectedId = null;
 
 export const handleBuildingClick = (mapInstance, setSelectedBuilding) => {
@@ -11,17 +14,15 @@ export const handleBuildingClick = (mapInstance, setSelectedBuilding) => {
     setSelectedBuilding(clicked);
 
     const source = mapInstance.getSource("dewsbury-buildings");
-    const currentData = source._data; // caution: internal API, but works reliably
+    const currentData = source._data;
 
-    const updatedFeatures = currentData.features.map((feature) => {
-      return {
-        ...feature,
-        properties: {
-          ...feature.properties,
-          selected: feature.properties.osid === clickedId
-        }
-      };
-    });
+    const updatedFeatures = currentData.features.map((feature) => ({
+      ...feature,
+      properties: {
+        ...feature.properties,
+        selected: feature.properties.osid === clickedId
+      }
+    }));
 
     source.setData({
       ...currentData,

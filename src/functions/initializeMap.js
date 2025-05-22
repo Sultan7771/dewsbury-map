@@ -1,3 +1,6 @@
+// Updated map initialization logic with hasJobs-based coloring
+// File: initializeMap.js
+
 import mapboxgl from "mapbox-gl";
 import { MAP_STYLE } from "../MapBoxConfig";
 import { fetchBuildingData } from "./fetchBuildingData";
@@ -18,7 +21,6 @@ export const initializeMap = async (mapContainer, setMap, setSelectedBuilding) =
   });
 
   mapInstance.on("load", async () => {
-    // Load marker icon before adding any symbol layers
     await new Promise((resolve, reject) => {
       mapInstance.loadImage("/icons/jobs_marker.png", (error, image) => {
         if (error) {
@@ -39,8 +41,9 @@ export const initializeMap = async (mapContainer, setMap, setSelectedBuilding) =
       anchor: "map",
       color: "#ffffff",
       intensity: 0.6,
-      position: [1.5, 90, 100], // top-down light
+      position: [1.5, 90, 100],
     });
+
     mapInstance.addLayer({
       id: "sky",
       type: "sky",
@@ -52,7 +55,6 @@ export const initializeMap = async (mapContainer, setMap, setSelectedBuilding) =
       }
     });
 
-    // Add terrain (optional but recommended for 3D maps)
     mapInstance.addSource("mapbox-dem", {
       type: "raster-dem",
       url: "mapbox://mapbox.terrain-rgb",
@@ -73,9 +75,7 @@ export const initializeMap = async (mapContainer, setMap, setSelectedBuilding) =
             type: "Feature",
             geometry: {
               type: "Polygon",
-              coordinates: [
-                [ /* array of lng/lat pairs forming a grassy area */]
-              ]
+              coordinates: [[]] // ← insert real grass coordinates
             },
             properties: {}
           }
@@ -87,14 +87,12 @@ export const initializeMap = async (mapContainer, setMap, setSelectedBuilding) =
       id: "grass-layer",
       type: "fill",
       source: "grass-areas",
-      layout: {},
       paint: {
-        "fill-color": "#39d353", // vibrant green
+        "fill-color": "#39d353",
         "fill-opacity": 0.6
       }
     });
 
-    // Load building geometry with height
     const data = await fetchBuildingData();
     if (!data || !data.features || data.features.length === 0) {
       console.error("🚫 No building data available.");
@@ -106,7 +104,6 @@ export const initializeMap = async (mapContainer, setMap, setSelectedBuilding) =
       data,
     });
 
-
     mapInstance.addLayer({
       id: "3d-buildings",
       type: "fill-extrusion",
@@ -114,50 +111,24 @@ export const initializeMap = async (mapContainer, setMap, setSelectedBuilding) =
       paint: {
         "fill-extrusion-color": [
           "case",
-          ["==", ["get", "selected"], true],
-          "#e1c400", // highlight color
-          [
-            "interpolate",
-            ["linear"],
-            ["get", "calculatedHeight"],
-            0, "#3b0a67",
-            10, "#7015cb",
-            20, "#0080ff",
-            35, "#00ffe0",
-            50, "#00ff7f",
-            75, "#f5ff00",
-            100, "#ff7300"
-          ]
+          ["==", ["get", "selected"], true], "#e1c400",
+          ["==", ["get", "hasJobs"], true], "#00ffcc",
+          "#888"
         ],
-
         "fill-extrusion-height": [
           "case",
           ["==", ["get", "selected"], true],
           ["get", "calculatedHeight"],
           ["get", "defaultHeight"]
         ],
-        "fill-extrusion-color": [
-          "case",
-          ["==", ["get", "selected"], true],
-          "#e1c400", // bright gold for selected
-          "#888"     // uniform grey for all others
-        ],
-
         "fill-extrusion-base": 0,
         "fill-extrusion-opacity": 0.9,
-        "fill-extrusion-outline-color": "#111111" // crisp shadowy edges
+        "fill-extrusion-outline-color": "#111111"
       }
     });
 
-
-
-    // ✅ Add job markers using loaded buildings
     await addJobMarkers(mapInstance, data.features);
-
-    // 🧭 Enable interactivity
     handleBuildingClick(mapInstance, setSelectedBuilding);
-
-    // Store the map instance in state
     setMap(mapInstance);
   });
 
