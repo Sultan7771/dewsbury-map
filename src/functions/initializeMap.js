@@ -111,9 +111,9 @@ export const initializeMap = async (mapContainer, setMap, setSelectedBuilding) =
       paint: {
         "fill-extrusion-color": [
           "case",
-          ["==", ["get", "selected"], true], "#e1c400",
-          ["==", ["get", "hasJobs"], true], "#00ffcc",
-          "#888"
+          ["==", ["get", "selected"], true], "#ffd700",        // Gold highlight
+          ["==", ["get", "hasJobs"], true], "#66e4c9",         // Vibrant teal (jobs)
+          "#e4e7eb"                                            // Soft modern grey
         ],
         "fill-extrusion-height": [
           "case",
@@ -121,11 +121,12 @@ export const initializeMap = async (mapContainer, setMap, setSelectedBuilding) =
           ["get", "calculatedHeight"],
           ["get", "defaultHeight"]
         ],
-        "fill-extrusion-base": 0,
-        "fill-extrusion-opacity": 0.9,
-        "fill-extrusion-outline-color": "#111111"
+        "fill-extrusion-base": 0.5,                            // Slight base offset
+        "fill-extrusion-opacity": 1.0,                         // Crisp, non-faded look
+        "fill-extrusion-outline-color": "#c4ccd3"              // Light steel edge
       }
     });
+
 
     await addJobMarkers(mapInstance, data.features);
     handleBuildingClick(mapInstance, setSelectedBuilding);
