@@ -49,6 +49,8 @@ export const addJobMarkers = async (map, buildingFeatures) => {
             map.removeSource(markerSourceId);
         }
 
+        const buildingHeight = matchedFeature.properties?.calculatedHeight || 20;
+
         map.addSource(markerSourceId, {
             type: "geojson",
             data: {
@@ -58,10 +60,11 @@ export const addJobMarkers = async (map, buildingFeatures) => {
                         type: "Feature",
                         geometry: {
                             type: "Point",
-                            coordinates,
+                            coordinates: [...coordinates], // make sure this is at the building centroid
                         },
                         properties: {
                             osid,
+                            iconHeightOffset: buildingHeight + 2 // lift it above building top
                         },
                     },
                 ],
@@ -74,12 +77,18 @@ export const addJobMarkers = async (map, buildingFeatures) => {
             source: markerSourceId,
             layout: {
                 "icon-image": "custom-marker",
-                "icon-size": 0.05,
-                "icon-anchor": "center",
-                "icon-offset": [0, -5],
+                "icon-size": 0.07,
+                "icon-anchor": "bottom",
                 "icon-allow-overlap": true,
+                // Optional: animate bounce or pulse
             },
+            paint: {
+                // Push icon up in screen space if needed
+                "icon-translate": [0, -buildingHeight * 3],
+                "icon-translate-anchor": "viewport"
+            }
         });
+
 
         console.log(`✅ Marker added for business: ${business.name} @ ${osid}`);
         markers.push({ source: markerSourceId, layer: markerLayerId });
