@@ -17,9 +17,6 @@ export const initializeMap = async (mapContainer, setMap, setSelectedBuilding) =
     minZoom: 15,
   });
 
-
-
-
   mapInstance.on("load", async () => {
     // Load marker icon before adding any symbol layers
     await new Promise((resolve, reject) => {
@@ -116,19 +113,36 @@ export const initializeMap = async (mapContainer, setMap, setSelectedBuilding) =
       source: "dewsbury-buildings",
       paint: {
         "fill-extrusion-color": [
-          "interpolate",
-          ["linear"],
-          ["get", "calculatedHeight"],
-          0, "#3b0a67",      // deep royal purple (base)
-          10, "#7015cb",     // vivid violet
-          20, "#0080ff",     // bright azure
-          35, "#00ffe0",     // turquoise neon
-          50, "#00ff7f",     // neon green
-          75, "#f5ff00",     // highlighter yellow
-          100, "#ff7300"     // vibrant orange
+          "case",
+          ["==", ["get", "selected"], true],
+          "#e1c400", // highlight color
+          [
+            "interpolate",
+            ["linear"],
+            ["get", "calculatedHeight"],
+            0, "#3b0a67",
+            10, "#7015cb",
+            20, "#0080ff",
+            35, "#00ffe0",
+            50, "#00ff7f",
+            75, "#f5ff00",
+            100, "#ff7300"
+          ]
         ],
 
-        "fill-extrusion-height": ["get", "calculatedHeight"],
+        "fill-extrusion-height": [
+          "case",
+          ["==", ["get", "selected"], true],
+          ["get", "calculatedHeight"],
+          ["get", "defaultHeight"]
+        ],
+        "fill-extrusion-color": [
+          "case",
+          ["==", ["get", "selected"], true],
+          "#e1c400", // bright gold for selected
+          "#888"     // uniform grey for all others
+        ],
+
         "fill-extrusion-base": 0,
         "fill-extrusion-opacity": 0.9,
         "fill-extrusion-outline-color": "#111111" // crisp shadowy edges

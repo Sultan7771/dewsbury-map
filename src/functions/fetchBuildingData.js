@@ -18,6 +18,8 @@ export const fetchBuildingData = async () => {
           feature.id = feature.properties.osid;
           feature.properties.calculatedHeight = getBuildingHeight(feature.properties);
           feature.properties.defaultHeight = feature.properties.calculatedHeight * 0.1;
+          feature.properties.selected = false; // ← Required for click logic
+
         }
       });
 

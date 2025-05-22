@@ -1,28 +1,31 @@
+let lastSelectedId = null;
 
 export const handleBuildingClick = (mapInstance, setSelectedBuilding) => {
   mapInstance.on("click", "3d-buildings", (e) => {
     if (!e.features?.length) return;
 
-    const clickedBuilding = e.features[0];
-    const buildingId = clickedBuilding.properties?.osid;
-    const coordinates = clickedBuilding.geometry.coordinates[0][0];
+    const clicked = e.features[0];
+    const clickedId = clicked.properties.osid;
+    if (!clickedId) return;
 
-    if (!buildingId) return;
+    setSelectedBuilding(clicked);
 
-    setSelectedBuilding(clickedBuilding);
+    const source = mapInstance.getSource("dewsbury-buildings");
+    const currentData = source._data; // caution: internal API, but works reliably
 
-    mapInstance.setPaintProperty("3d-buildings", "fill-extrusion-color", [
-      "case",
-      ["==", ["get", "osid"], buildingId],
-      "#e1c400",
-      "#5cbeed",
-    ]);
+    const updatedFeatures = currentData.features.map((feature) => {
+      return {
+        ...feature,
+        properties: {
+          ...feature.properties,
+          selected: feature.properties.osid === clickedId
+        }
+      };
+    });
 
-    mapInstance.setPaintProperty("3d-buildings", "fill-extrusion-height", [
-      "case",
-      ["==", ["get", "osid"], buildingId],
-      ["get", "calculatedHeight"],
-      ["get", "defaultHeight"],
-    ]);
+    source.setData({
+      ...currentData,
+      features: updatedFeatures
+    });
   });
 };
