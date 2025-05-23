@@ -84,14 +84,12 @@ export const addJobMarkers = async (map, buildingFeatures) => {
             layout: {
                 "icon-image": "custom-marker",
                 "icon-size": 0.07,
-                "icon-anchor": "bottom",
+                "icon-anchor": "top",
                 "icon-allow-overlap": true,
-                // Optional: animate bounce or pulse
             },
             paint: {
-                // Push icon up in screen space if needed
-                "icon-translate": [0, -buildingHeight * 3],
-                "icon-translate-anchor": "viewport"
+                "icon-translate": [0, -buildingHeight * 0.1 * 3],
+                "icon-anchor": "bottom"
             }
         });
 

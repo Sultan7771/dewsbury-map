@@ -63,16 +63,18 @@ export const addSalesMarkers = async (map, buildingFeatures) => {
             source: markerSourceId,
             layout: {
                 "icon-image": "custom-sales-marker",
-                "icon-size": 0.07,
-                "icon-anchor": "bottom",
+                "icon-size": 0.05,
+                "icon-anchor": "top",
                 "icon-allow-overlap": true,
             },
             paint: {
-                // Move sales marker to the top-right (X: right, Y: up)
-                "icon-translate": [15, -buildingHeight * 6 - 6],
-                "icon-translate-anchor": "viewport"
+                "icon-translate": [0, -buildingHeight * 0.1 * 2],
+                "icon-anchor": "bottom"
             }
         });
+
+
+
 
 
         markers.push({ source: markerSourceId, layer: markerLayerId });
