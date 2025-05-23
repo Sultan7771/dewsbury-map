@@ -35,6 +35,12 @@ export const addJobMarkers = async (map, buildingFeatures) => {
         }
         // ✅ Only run this if matchedFeature is valid
         const coordinates = calculateCentroid(matchedFeature.geometry.coordinates);
+        const buildingHeight = matchedFeature.properties?.calculatedHeight || 20;
+
+        // Offset coordinates slightly to avoid overlap with job marker
+        const offsetLng = 0.00006; // ~5 meters east
+        const offsetLat = 0.00004; // ~4 meters north
+        const offsetCoordinates = [coordinates[0] + offsetLng, coordinates[1] + offsetLat];
 
         const markerSourceId = `job-marker-${osid}`;
         const markerLayerId = `job-layer-${osid}`;
@@ -49,7 +55,6 @@ export const addJobMarkers = async (map, buildingFeatures) => {
             map.removeSource(markerSourceId);
         }
 
-        const buildingHeight = matchedFeature.properties?.calculatedHeight || 20;
 
         map.addSource(markerSourceId, {
             type: "geojson",
@@ -60,16 +65,17 @@ export const addJobMarkers = async (map, buildingFeatures) => {
                         type: "Feature",
                         geometry: {
                             type: "Point",
-                            coordinates: [...coordinates], // make sure this is at the building centroid
+                            coordinates: offsetCoordinates, // 👈 new offset here
                         },
                         properties: {
                             osid,
-                            iconHeightOffset: buildingHeight + 2 // lift it above building top
+                            iconHeightOffset: buildingHeight + 3,
                         },
                     },
                 ],
             },
         });
+
 
         map.addLayer({
             id: markerLayerId,
