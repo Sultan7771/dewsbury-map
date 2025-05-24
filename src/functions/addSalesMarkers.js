@@ -29,6 +29,20 @@ export const addSalesMarkers = async (map, buildingFeatures) => {
         }
 
         const coordinates = calculateCentroid(matchedFeature.geometry.coordinates);
+
+        // Deterministic hash offset from osid
+        const offsetMultiplier = Array.from(osid).reduce((acc, char) => acc + char.charCodeAt(0), 0) % 10;
+        const angle = (offsetMultiplier / 10) * 2 * Math.PI;
+        const offsetDistance = 0.00006; // ≈5–6 meters
+
+        const offsetLng = Math.cos(angle) * offsetDistance;
+        const offsetLat = Math.sin(angle) * offsetDistance;
+
+        const offsetCoordinates = [
+            coordinates[0] + offsetLng,
+            coordinates[1] + offsetLat,
+        ];
+
         const buildingHeight = matchedFeature.properties?.calculatedHeight || 20;
 
         const markerSourceId = `sales-marker-${osid}`;
@@ -46,7 +60,7 @@ export const addSalesMarkers = async (map, buildingFeatures) => {
                         type: "Feature",
                         geometry: {
                             type: "Point",
-                            coordinates: [...coordinates],
+                            coordinates: offsetCoordinates,
                         },
                         properties: {
                             osid,
@@ -61,21 +75,18 @@ export const addSalesMarkers = async (map, buildingFeatures) => {
             id: markerLayerId,
             type: "symbol",
             source: markerSourceId,
+            minzoom: 16, // 👈 only shows at closer zoom
             layout: {
                 "icon-image": "custom-sales-marker",
-                "icon-size": 0.05,
+                "icon-size": 0.045,
                 "icon-anchor": "top",
-                "icon-allow-overlap": true,
+                "icon-allow-overlap": false, // 👈 prevents icon stacking
+                "icon-ignore-placement": false
             },
             paint: {
                 "icon-translate": [0, -buildingHeight * 0.1 * 2],
-                "icon-anchor": "bottom"
             }
         });
-
-
-
-
 
         markers.push({ source: markerSourceId, layer: markerLayerId });
     }

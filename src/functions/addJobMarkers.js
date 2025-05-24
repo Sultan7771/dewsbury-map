@@ -33,6 +33,7 @@ export const addJobMarkers = async (map, buildingFeatures) => {
             console.warn(`❌ No match found in buildings for osid: ${osid}`);
             continue;
         }
+        
         // ✅ Only run this if matchedFeature is valid
         const coordinates = calculateCentroid(matchedFeature.geometry.coordinates);
         const buildingHeight = matchedFeature.properties?.calculatedHeight || 20;
@@ -83,7 +84,7 @@ export const addJobMarkers = async (map, buildingFeatures) => {
             source: markerSourceId,
             layout: {
                 "icon-image": "custom-marker",
-                "icon-size": 0.07,
+                "icon-size": 0.05,
                 "icon-anchor": "top",
                 "icon-allow-overlap": true,
             },
