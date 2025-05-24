@@ -39,7 +39,7 @@ export const addJobMarkers = async (map, buildingFeatures) => {
         const buildingHeight = matchedFeature.properties?.calculatedHeight || 20;
 
         // Offset coordinates slightly to avoid overlap with job marker
-        const offsetLng = 0.00006; // ~5 meters east
+        const offsetLng = 0.00008; // ~5 meters east
         const offsetLat = 0.00004; // ~4 meters north
         const offsetCoordinates = [coordinates[0] + offsetLng, coordinates[1] + offsetLat];
 

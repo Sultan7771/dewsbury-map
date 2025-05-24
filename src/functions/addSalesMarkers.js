@@ -33,7 +33,7 @@ export const addSalesMarkers = async (map, buildingFeatures) => {
         // Deterministic hash offset from osid
         const offsetMultiplier = Array.from(osid).reduce((acc, char) => acc + char.charCodeAt(0), 0) % 10;
         const angle = (offsetMultiplier / 10) * 2 * Math.PI;
-        const offsetDistance = 0.00006; // ≈5–6 meters
+        const offsetDistance = 0.0001; // ≈5–6 meters
 
         const offsetLng = Math.cos(angle) * offsetDistance;
         const offsetLat = Math.sin(angle) * offsetDistance;
