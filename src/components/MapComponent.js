@@ -5,6 +5,7 @@ import BuildingInfoWindow from "./BuildingInfoWindow";
 import Navbar from "./NavBar";
 import FeedWindow from "./FeedWindow";
 import ProfileWindow from "./ProfileWindow";
+import CreateJobWindow from "./CreateJobWindow";
 import { AuthContext } from "../AuthContext";
 import { initializeMap } from "../functions/initializeMap";
 
@@ -18,6 +19,7 @@ const MapComponent = () => {
   const [map, setMap] = useState(null);
   const [selectedBuilding, setSelectedBuilding] = useState(null);
   const [showProfile, setShowProfile] = useState(false);
+  const [showCreateJob, setShowCreateJob] = useState(false);
   const markerRef = useRef(null);
 
   useEffect(() => {
@@ -34,6 +36,16 @@ const MapComponent = () => {
     setShowProfile((prev) => !prev);
   };
 
+  const handleOpenCreateJob = () => {
+    if (selectedBuilding) {
+      setShowCreateJob(true);
+    }
+  };
+
+  const handleCloseCreateJob = () => {
+    setShowCreateJob(false);
+  };
+
   return (
     <div className="map-container">
       <div
@@ -41,20 +53,43 @@ const MapComponent = () => {
         className="mapboxgl-map"
         style={{ height: "100vh" }}
       />
+
       {selectedBuilding && (
-        <BuildingInfoWindow
+        <>
+          <BuildingInfoWindow
+            building={selectedBuilding}
+            onClose={() => setSelectedBuilding(null)}
+            onAddBusiness={() => setShowCreateJob(true)}
+          />
+          <button
+            className="create-job-button"
+            onClick={() => {
+              console.log("Create Job Button Clicked");
+              handleOpenCreateJob();
+            }}
+          >
+            Add Business Info
+          </button>
+        </>
+      )}
+
+      {selectedBuilding && showCreateJob && (
+        <CreateJobWindow
           building={selectedBuilding}
-          onClose={() => setSelectedBuilding(null)}
+          onClose={handleCloseCreateJob}
         />
       )}
+
       <div className="feed-window-wrapper">
         <FeedWindow />
       </div>
+
       {showProfile && (
         <div className="profile-window-wrapper">
           <ProfileWindow onClose={toggleProfile} />
         </div>
       )}
+
       <Navbar toggleProfile={toggleProfile} />
     </div>
   );

@@ -4,7 +4,7 @@ import { AiOutlineMinusCircle, AiOutlinePlusCircle } from "react-icons/ai";
 import { doc, getDoc } from "firebase/firestore";
 import { FIRESTORE_DB } from "../FirebaseConfig"; // Adjust path as needed
 
-const BuildingInfoWindow = ({ building }) => {
+const BuildingInfoWindow = ({ building, onClose, onAddBusiness }) => {
   const [isMinimized, setIsMinimized] = useState(false);
   const [activeTab, setActiveTab] = useState("Posts");
   const [businessData, setBusinessData] = useState(null);
@@ -22,6 +22,7 @@ const BuildingInfoWindow = ({ building }) => {
         setBusinessData(businessSnap.data());
       } else {
         console.warn(`❌ No business found for osid: ${osId}`);
+        setBusinessData(null);
       }
     };
 
@@ -82,70 +83,83 @@ const BuildingInfoWindow = ({ building }) => {
 
       {!isMinimized && (
         <>
-          <div className="tab-menu">
-            {["Posts", "Jobs", "Details", "Contact"].map((tab) => (
-              <span
-                key={tab}
-                className={`tab ${activeTab === tab ? "active" : ""}`}
-                onClick={() => handleTabClick(tab)}
-              >
-                {tab}
-              </span>
-            ))}
-          </div>
+          {businessData ? (
+            <>
+              <div className="tab-menu">
+                {["Posts", "Jobs", "Details", "Contact"].map((tab) => (
+                  <span
+                    key={tab}
+                    className={`tab ${activeTab === tab ? "active" : ""}`}
+                    onClick={() => handleTabClick(tab)}
+                  >
+                    {tab}
+                  </span>
+                ))}
+              </div>
 
-          <div className="building-info-content">
-            {activeTab === "Posts" && (
-              <div className="section">
-                <h4>Posts</h4>
-                {posts.length > 0 ? (
-                  posts.map((post, index) => (
-                    <div key={index} className="post">
-                      <strong>{post.title}</strong>
-                      <p>{post.content}</p>
+              <div className="building-info-content">
+                {activeTab === "Posts" && (
+                  <div className="section">
+                    <h4>Posts</h4>
+                    {posts.length > 0 ? (
+                      posts.map((post, index) => (
+                        <div key={index} className="post">
+                          <strong>{post.title}</strong>
+                          <p>{post.content}</p>
+                        </div>
+                      ))
+                    ) : (
+                      <p>No posts yet.</p>
+                    )}
+                  </div>
+                )}
+                {activeTab === "Jobs" && (
+                  <div className="section">
+                    <h4>Jobs</h4>
+                    {jobs.length > 0 ? (
+                      jobs.map((job, index) => (
+                        <div key={index} className="job">
+                          <strong>{job.title}</strong>
+                          <p>{job.description}</p>
+                        </div>
+                      ))
+                    ) : (
+                      <p>No jobs posted yet.</p>
+                    )}
+                  </div>
+                )}
+                {activeTab === "Details" && (
+                  <div className="section">
+                    <h4>Details</h4>
+                    <div className="info-row">
+                      <span className="info-label">OS ID:</span>
+                      <span className="info-value">{osId}</span>
                     </div>
-                  ))
-                ) : (
-                  <p>No posts yet.</p>
+                    <div className="info-row">
+                      <span className="info-label">Height:</span>
+                      <span className="info-value">{height} meters</span>
+                    </div>
+                  </div>
+                )}
+                {activeTab === "Contact" && (
+                  <div className="section">
+                    <h4>Contact</h4>
+                    <p>Email: {contact.email || "Not available"}</p>
+                    <p>Website: {contact.website || "Not available"}</p>
+                  </div>
                 )}
               </div>
-            )}
-            {activeTab === "Jobs" && (
-              <div className="section">
-                <h4>Jobs</h4>
-                {jobs.length > 0 ? (
-                  jobs.map((job, index) => (
-                    <div key={index} className="job">
-                      <strong>{job.title}</strong>
-                      <p>{job.description}</p>
-                    </div>
-                  ))
-                ) : (
-                  <p>No jobs posted yet.</p>
-                )}
-              </div>
-            )}
-            {activeTab === "Details" && (
-              <div className="section">
-                <h4>Details</h4>
-                <div className="info-row">
-                  <span className="info-label">OS ID:</span>
-                  <span className="info-value">{osId}</span>
-                </div>
-                <div className="info-row">
-                  <span className="info-label">Height:</span>
-                  <span className="info-value">{height} meters</span>
-                </div>
-              </div>
-            )}
-            {activeTab === "Contact" && (
-              <div className="section">
-                <h4>Contact</h4>
-                <p>Email: {contact.email || "Not available"}</p>
-                <p>Website: {contact.website || "Not available"}</p>
-              </div>
-            )}
-          </div>
+            </>
+          ) : (
+            <div className="section">
+              <p>This building has no business info yet.</p>
+              {onAddBusiness && (
+                <button className="add-business-btn" onClick={onAddBusiness}>
+                  Add Business Info
+                </button>
+              )}
+            </div>
+          )}
         </>
       )}
     </div>
