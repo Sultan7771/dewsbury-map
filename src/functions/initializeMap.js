@@ -128,6 +128,20 @@ export const initializeMap = async (mapContainer, setMap, setSelectedBuilding) =
       },
     });
 
+    mapInstance.addLayer({
+      id: "building-glow",
+      type: "line",
+      source: "dewsbury-buildings",
+      filter: ["==", ["get", "selected"], true], // 👈 apply only to selected building
+      paint: {
+        "line-color": "#00ffff", // Glow color (neon cyan)
+        "line-width": 33,
+        "line-opacity": 0.7,
+        "line-blur": 30
+      }
+    });
+
+
     // Add markers
     await addJobMarkers(mapInstance, data.features);
     await addSalesMarkers(mapInstance, data.features);
