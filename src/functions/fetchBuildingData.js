@@ -29,7 +29,7 @@ export const fetchBuildingData = async () => {
         if (osid) {
           feature.id = osid;
           feature.properties.calculatedHeight = getBuildingHeight(feature.properties);
-          feature.properties.defaultHeight = feature.properties.calculatedHeight * 0.1;
+          feature.properties.defaultHeight = feature.properties.calculatedHeight;
           feature.properties.selected = false;
           feature.properties.hasJobs = jobOsids.includes(osid); // ✅ Mark if job available
         }

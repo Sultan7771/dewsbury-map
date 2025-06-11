@@ -106,15 +106,15 @@ export const initializeMap = async (mapContainer, setMap, setSelectedBuilding) =
         "fill-extrusion-color": [
           "case",
           ["all", ["==", ["get", "selected"], true], ["==", ["get", "hasJobs"], true]],
-          "#00c7b1", // selected + has jobs
+          "#00ffff", // selected + has jobs
 
           ["all", ["==", ["get", "selected"], true], ["!=", ["get", "hasJobs"], true]],
-          "#ebebeb", // selected only
+          "#E0FFF8", // selected only
 
           ["==", ["get", "hasJobs"], true],
-          "#66e4c9", // has jobs
+          "#00B7FF", // has jobs
 
-          "#e4e7eb", // default
+          "#FFFFFF", // default
         ],
         "fill-extrusion-height": [
           "case",
@@ -124,7 +124,7 @@ export const initializeMap = async (mapContainer, setMap, setSelectedBuilding) =
         ],
         "fill-extrusion-base": 0.5,
         "fill-extrusion-opacity": 1.0,
-        "fill-extrusion-outline-color": "#c4ccd3",
+        "fill-extrusion-outline-color": "#B3BEC7", // try light grey or semi-transparent
       },
     });
 
@@ -138,7 +138,7 @@ export const initializeMap = async (mapContainer, setMap, setSelectedBuilding) =
         "line-width": 33,
         "line-opacity": 0.7,
         "line-blur": 30
-      }
+      } 
     });
 
 
