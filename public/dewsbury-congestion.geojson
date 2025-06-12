@@ -1,0 +1,62 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "type": "Feature",
+        "properties": { "congestionLevel": 4 },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [-1.6302, 53.6911]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": { "congestionLevel": 5 },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [-1.6290, 53.6913]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": { "congestionLevel": 3 },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [-1.6320, 53.6909]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": { "congestionLevel": 2 },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [-1.6310, 53.6920]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": { "congestionLevel": 4 },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [-1.6285, 53.6907]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": { "congestionLevel": 1 },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [-1.6275, 53.6915]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": { "congestionLevel": 5 },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [-1.6308, 53.6902]
+        }
+      }
+    ]
+  }
+  

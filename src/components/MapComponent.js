@@ -54,35 +54,6 @@ const MapComponent = () => {
         style={{ height: "100vh" }}
       />
 
-      {selectedBuilding && (
-        <>
-          <BuildingInfoWindow
-            building={selectedBuilding}
-            onClose={() => setSelectedBuilding(null)}
-            onAddBusiness={() => setShowCreateJob(true)}
-          />
-          <button
-            className="create-job-button"
-            onClick={() => {
-              console.log("Create Job Button Clicked");
-              handleOpenCreateJob();
-            }}
-          >
-            Add Business Info
-          </button>
-        </>
-      )}
-
-      {selectedBuilding && showCreateJob && (
-        <CreateJobWindow
-          building={selectedBuilding}
-          onClose={handleCloseCreateJob}
-        />
-      )}
-
-      <div className="feed-window-wrapper">
-        <FeedWindow />
-      </div>
 
       {showProfile && (
         <div className="profile-window-wrapper">
@@ -96,3 +67,5 @@ const MapComponent = () => {
 };
 
 export default MapComponent;
+
+// https://www.canva.com/design/DAGqGUSEMSc/I-m5Xl8D5mYNHZ_sKQBDkQ/view?utm_content=DAGqGUSEMSc&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h55199c4773

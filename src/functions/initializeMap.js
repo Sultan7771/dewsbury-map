@@ -105,7 +105,7 @@ export const initializeMap = async (
           "case",
           ["==", ["get", "selected"], true],
           ["get", "calculatedHeight"],
-          ["*", ["get", "defaultHeight"], 0.1], // 10% of height
+          ["*", ["get", "defaultHeight"], 1], // 10% of height
         ],
         "fill-extrusion-base": 0.5,
         "fill-extrusion-opacity": 1.0,
@@ -124,6 +124,45 @@ export const initializeMap = async (
         "line-width": 33,
         "line-opacity": 0.7,
         "line-blur": 30,
+      },
+    });
+
+    mapInstance.addSource("congestion-points", {
+      type: "geojson",
+      data: "dewsbury-congestion.geojson",
+    });
+
+    mapInstance.addLayer({
+      id: "congestion-heatmap",
+      type: "heatmap",
+      source: "congestion-points",
+      maxzoom: 19,
+      paint: {
+        "heatmap-weight": [
+          "interpolate",
+          ["linear"],
+          ["get", "congestionLevel"],
+          0,
+          0,
+          5,
+          1,
+        ],
+        "heatmap-intensity": 3, // Increased from 1
+        "heatmap-radius": 250, // 10x larger than original 25
+        "heatmap-opacity": 0.55,
+        "heatmap-color": [
+          "interpolate",
+          ["linear"],
+          ["heatmap-density"],
+          0,
+          "rgba(0, 255, 0, 0)",
+          0.3,
+          "rgba(255, 255, 0, 0.6)",
+          0.6,
+          "rgba(255, 165, 0, 0.8)",
+          1,
+          "rgba(255, 0, 0, 1)",
+        ],
       },
     });
 
