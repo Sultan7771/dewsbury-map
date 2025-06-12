@@ -4,7 +4,11 @@ import { fetchBuildingData } from "./fetchBuildingData";
 import { handleBuildingClick } from "./handleBuildingClick";
 import { markPointsOfInterest } from "./PointsOfInterests"; // ✅ Unified marker logic
 
-export const initializeMap = async (mapContainer, setMap, setSelectedBuilding) => {
+export const initializeMap = async (
+  mapContainer,
+  setMap,
+  setSelectedBuilding
+) => {
   const mapInstance = new mapboxgl.Map({
     container: mapContainer.current,
     style: MAP_STYLE,
@@ -25,7 +29,6 @@ export const initializeMap = async (mapContainer, setMap, setSelectedBuilding) =
       intensity: 0.6,
       position: [1.5, 90, 100],
     });
-    
 
     mapInstance.addLayer({
       id: "sky",
@@ -74,22 +77,35 @@ export const initializeMap = async (mapContainer, setMap, setSelectedBuilding) =
       paint: {
         "fill-extrusion-color": [
           "case",
-          ["all", ["==", ["get", "hasJobs"], true], ["==", ["get", "hasSales"], true]],
-          "#FFA500", // orange = both jobs + sales
+          // Both jobs + sales
+          [
+            "all",
+            ["==", ["get", "hasJobs"], true],
+            ["==", ["get", "hasSales"], true],
+          ],
+          "#FFD700", // gold
 
+          // Jobs only
           ["==", ["get", "hasJobs"], true],
-          "#00FF00", // green = jobs
+          "#4CAF50", // elegant green
 
+          // Sales only
           ["==", ["get", "hasSales"], true],
-          "#FF0000", // red = sales
+          "#E53935", // strong red
 
-          "#FFFFFF" // default
+          // Selected fallback color (optional)
+          ["==", ["get", "selected"], true],
+          "#2196F3", // blue
+
+          // Default
+          "#D3D3D3", // light grey
         ],
+
         "fill-extrusion-height": [
           "case",
           ["==", ["get", "selected"], true],
           ["get", "calculatedHeight"],
-          ["get", "defaultHeight"],
+          ["*", ["get", "defaultHeight"], 0.1], // 10% of height
         ],
         "fill-extrusion-base": 0.5,
         "fill-extrusion-opacity": 1.0,
