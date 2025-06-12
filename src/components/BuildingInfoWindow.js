@@ -57,11 +57,8 @@ const BuildingInfoWindow = ({ building, onClose, onAddBusiness }) => {
     <div className={`building-info-window ${isMinimized ? "minimized" : ""}`}>
       <div className="building-info-header">
         <div className="logo-circle">
-          {logoUrl ? (
-            <img src={logoUrl} alt="logo" className="logo-img" />
-          ) : (
-            <span className="logo-text">🏢</span>
-          )}
+        <span className="logo-text">🏢</span>
+
         </div>
         <div className="header-text">
           <h3>{name}</h3>

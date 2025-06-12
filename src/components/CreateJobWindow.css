@@ -1,56 +1,84 @@
 .create-job-window {
   position: absolute;
-  top: 150px;
-  left: 50px;
+  top: 360px;
+  right: 20px;
   z-index: 10000;
-  background-color: white;
+  background-color: rgba(30, 30, 30, 0.9);
   padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-  width: 320px;
+  border-radius: 16px;
+  width: 340px;
   max-width: 90vw;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+  border: 1px solid #333;
+  backdrop-filter: blur(10px);
+  color: #e0e0e0;
+  font-family: "Segoe UI", sans-serif;
 }
 
-
 .create-job-window h2 {
-  margin-bottom: 10px;
+  font-size: 20px;
+  color: #00d8ff;
+  margin-bottom: 14px;
 }
 
 .create-job-window form label {
-  font-weight: bold;
-  margin-top: 10px;
+  font-weight: 500;
+  margin-top: 12px;
   display: block;
+  color: #cccccc;
+  font-size: 14px;
 }
 
 .create-job-window form input,
 .create-job-window form textarea {
   width: 100%;
-  padding: 8px;
+  padding: 10px;
   margin-top: 4px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  margin-bottom: 12px;
+  background-color: #1c1c1c;
+  color: #e0e0e0;
+  border: 1px solid #444;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.create-job-window form input:focus,
+.create-job-window form textarea:focus {
+  border-color: #00d8ff;
+  outline: none;
+  background-color: #222;
 }
 
 .create-job-window .actions {
   display: flex;
   justify-content: space-between;
-  margin-top: 10px;
+  margin-top: 12px;
 }
 
 .create-job-window .actions button {
-  padding: 8px 12px;
+  padding: 10px 16px;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
 }
 
 .create-job-window .actions button[type="submit"] {
-  background-color: #28a745;
-  color: white;
+  background-color: #00d8ff;
+  color: #111;
+}
+
+.create-job-window .actions button[type="submit"]:hover {
+  background-color: #00bcd4;
 }
 
 .create-job-window .actions button[type="button"] {
-  background-color: #dc3545;
+  background-color: #ff5252;
   color: white;
+}
+
+.create-job-window .actions button[type="button"]:hover {
+  background-color: #e53935;
 }
