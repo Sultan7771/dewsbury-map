@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./BuildingInfoWindow.css";
 import { AiOutlineMinusCircle, AiOutlinePlusCircle } from "react-icons/ai";
 import { doc, getDoc } from "firebase/firestore";
-import { FIRESTORE_DB } from "../FirebaseConfig"; // Adjust path as needed
+import { FIRESTORE_DB } from "../FirebaseConfig";
 
 const BuildingInfoWindow = ({ building, onClose, onAddBusiness }) => {
   const [isMinimized, setIsMinimized] = useState(false);
@@ -14,8 +14,7 @@ const BuildingInfoWindow = ({ building, onClose, onAddBusiness }) => {
   useEffect(() => {
     const fetchBusinessInfo = async () => {
       if (!osId) return;
-      const db = FIRESTORE_DB;
-      const businessRef = doc(db, "bizmapsbusiness", osId);
+      const businessRef = doc(FIRESTORE_DB, "bizmapsbusiness", osId);
       const businessSnap = await getDoc(businessRef);
 
       if (businessSnap.exists()) {
@@ -38,7 +37,7 @@ const BuildingInfoWindow = ({ building, onClose, onAddBusiness }) => {
     building.properties.absoluteheightmaximum ||
     "N/A";
 
-  const name = businessData?.name || "Unknown Business";
+  const name = businessData?.name || "No Business Registered";
   const logoUrl = businessData?.logo || "";
   const likes = businessData?.likes || 0;
   const followers = businessData?.followers || 0;
@@ -61,12 +60,12 @@ const BuildingInfoWindow = ({ building, onClose, onAddBusiness }) => {
           {logoUrl ? (
             <img src={logoUrl} alt="logo" className="logo-img" />
           ) : (
-            <span className="logo-text">B</span>
+            <span className="logo-text">🏢</span>
           )}
         </div>
         <div className="header-text">
           <h3>{name}</h3>
-          {!isMinimized && (
+          {!isMinimized && businessData && (
             <p>
               {likes} likes • {followers} followers
             </p>
@@ -152,6 +151,15 @@ const BuildingInfoWindow = ({ building, onClose, onAddBusiness }) => {
             </>
           ) : (
             <div className="section">
+              <h4>Building Info</h4>
+              <div className="info-row">
+                <span className="info-label">OS ID:</span>
+                <span className="info-value">{osId}</span>
+              </div>
+              <div className="info-row">
+                <span className="info-label">Height:</span>
+                <span className="info-value">{height} meters</span>
+              </div>
               <p>This building has no business info yet.</p>
               {onAddBusiness && (
                 <button className="add-business-btn" onClick={onAddBusiness}>

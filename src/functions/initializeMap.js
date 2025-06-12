@@ -1,11 +1,8 @@
-// File: initializeMap.js
-
 import mapboxgl from "mapbox-gl";
 import { MAP_STYLE } from "../MapBoxConfig";
 import { fetchBuildingData } from "./fetchBuildingData";
 import { handleBuildingClick } from "./handleBuildingClick";
-import { addJobMarkers } from "./addJobMarkers";
-import { addSalesMarkers } from "./addSalesMarkers"; // ✅ Import sales marker logic
+import { markPointsOfInterest } from "./PointsOfInterests"; // ✅ Unified marker logic
 
 export const initializeMap = async (mapContainer, setMap, setSelectedBuilding) => {
   const mapInstance = new mapboxgl.Map({
@@ -21,40 +18,6 @@ export const initializeMap = async (mapContainer, setMap, setSelectedBuilding) =
   });
 
   mapInstance.on("load", async () => {
-    // Load job marker icon
-    await new Promise((resolve, reject) => {
-      mapInstance.loadImage("/icons/jobs_marker.png", (error, image) => {
-        if (error) {
-          console.error("❌ Failed to load jobs marker image:", error);
-          reject(error);
-        } else if (!mapInstance.hasImage("custom-marker")) {
-          mapInstance.addImage("custom-marker", image, {
-            sdf: false,
-            pixelRatio: 2.0,
-          });
-          console.log("✅ Jobs marker image loaded.");
-        }
-        resolve();
-      });
-    });
-
-    // Load sales marker icon
-    await new Promise((resolve, reject) => {
-      mapInstance.loadImage("/icons/sales.png", (error, image) => {
-        if (error) {
-          console.error("❌ Failed to load sales marker image:", error);
-          reject(error);
-        } else if (!mapInstance.hasImage("custom-sales-marker")) {
-          mapInstance.addImage("custom-sales-marker", image, {
-            sdf: false,
-            pixelRatio: 2.0,
-          });
-          console.log("✅ Sales marker image loaded.");
-        }
-        resolve();
-      });
-    });
-
     // Optional lighting and sky setup
     mapInstance.setLight({
       anchor: "map",
@@ -62,6 +25,7 @@ export const initializeMap = async (mapContainer, setMap, setSelectedBuilding) =
       intensity: 0.6,
       position: [1.5, 90, 100],
     });
+    
 
     mapInstance.addLayer({
       id: "sky",
@@ -93,11 +57,16 @@ export const initializeMap = async (mapContainer, setMap, setSelectedBuilding) =
       return;
     }
 
+    // ✅ Update building properties with POIs
+    await markPointsOfInterest(mapInstance, data.features);
+
+    // Add building source
     mapInstance.addSource("dewsbury-buildings", {
       type: "geojson",
       data,
     });
 
+    // 3D building layer
     mapInstance.addLayer({
       id: "3d-buildings",
       type: "fill-extrusion",
@@ -105,16 +74,16 @@ export const initializeMap = async (mapContainer, setMap, setSelectedBuilding) =
       paint: {
         "fill-extrusion-color": [
           "case",
-          ["all", ["==", ["get", "selected"], true], ["==", ["get", "hasJobs"], true]],
-          "#00ffff", // selected + has jobs
-
-          ["all", ["==", ["get", "selected"], true], ["!=", ["get", "hasJobs"], true]],
-          "#E0FFF8", // selected only
+          ["all", ["==", ["get", "hasJobs"], true], ["==", ["get", "hasSales"], true]],
+          "#FFA500", // orange = both jobs + sales
 
           ["==", ["get", "hasJobs"], true],
-          "#00B7FF", // has jobs
+          "#00FF00", // green = jobs
 
-          "#FFFFFF", // default
+          ["==", ["get", "hasSales"], true],
+          "#FF0000", // red = sales
+
+          "#FFFFFF" // default
         ],
         "fill-extrusion-height": [
           "case",
@@ -124,32 +93,28 @@ export const initializeMap = async (mapContainer, setMap, setSelectedBuilding) =
         ],
         "fill-extrusion-base": 0.5,
         "fill-extrusion-opacity": 1.0,
-        "fill-extrusion-outline-color": "#B3BEC7", // try light grey or semi-transparent
+        "fill-extrusion-outline-color": "#B3BEC7",
       },
     });
 
+    // Glow effect for selected building
     mapInstance.addLayer({
       id: "building-glow",
       type: "line",
       source: "dewsbury-buildings",
-      filter: ["==", ["get", "selected"], true], // 👈 apply only to selected building
+      filter: ["==", ["get", "selected"], true],
       paint: {
-        "line-color": "#00ffff", // Glow color (neon cyan)
+        "line-color": "#00ffff",
         "line-width": 33,
         "line-opacity": 0.7,
-        "line-blur": 30
-      } 
+        "line-blur": 30,
+      },
     });
-
-
-    // Add markers
-    await addJobMarkers(mapInstance, data.features);
-    await addSalesMarkers(mapInstance, data.features);
 
     // Handle clicks on buildings
     handleBuildingClick(mapInstance, setSelectedBuilding);
 
-    // Set the map instance to state
+    // Set map instance in state
     setMap(mapInstance);
   });
 
