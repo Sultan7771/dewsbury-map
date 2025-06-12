@@ -1,6 +1,6 @@
-/* Background with professional and soft gradient */
+/* Background with soft professional gradient */
 .login-background {
-  background: linear-gradient(135deg, #f4e2d8, #d5c1bb, #b0b1c1, #b0c7d1);
+  background: linear-gradient(135deg, #585757, #2a2a2a, #333, #222);
   height: 100vh;
   display: flex;
   justify-content: center;
@@ -9,12 +9,14 @@
 
 /* Login container styling */
 .login-container {
-  background-color: white;
+  background-color: rgba(66, 66, 66, 0.9);
   border-radius: 16px;
   padding: 40px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
   animation: fadeIn 0.6s ease-in-out;
   text-align: center;
+  color: #e0e0e0;
+  backdrop-filter: blur(8px);
 }
 
 /* Logo styling */
@@ -28,12 +30,15 @@
   width: 80px;
   height: 80px;
   border-radius: 50%;
+  box-shadow: 0 0 8px rgba(0, 216, 255, 0.4);
 }
 
 /* Title styling */
 .login-title {
   font-weight: bold;
-  color: #444;
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #00d8ff;
 }
 
 /* Input fields styling */
@@ -44,6 +49,18 @@
 
 .login-input input {
   padding: 12px;
+  width: 100%;
+  background-color: #1e1e1e;
+  border: 1px solid #444;
+  border-radius: 8px;
+  color: #f5f5f5;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.login-input input:focus {
+  border-color: #00d8ff;
 }
 
 /* Button styling */
@@ -52,14 +69,16 @@
   padding: 12px;
   font-size: 18px;
   font-weight: bold;
-  background: linear-gradient(135deg, #4b89dc, #7289da);
-  color: white;
+  background: linear-gradient(135deg, #00d8ff, #009ec3);
+  color: #111;
+  border: none;
   border-radius: 10px;
+  cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .login-button:hover {
-  background: linear-gradient(135deg, #7289da, #4b89dc);
+  background: linear-gradient(135deg, #009ec3, #00d8ff);
   transform: translateY(-2px);
 }
 
@@ -67,11 +86,11 @@
 .login-footer {
   margin-top: 18px;
   font-size: 15px;
-  color: #555;
+  color: #bbb;
 }
 
 .signup-link {
-  color: #4b89dc;
+  color: #00d8ff;
   font-weight: bold;
   text-decoration: none;
 }
@@ -86,7 +105,9 @@
   to { opacity: 1; transform: scale(1); }
 }
 
+/* Error message styling */
 .error-message {
-  color: red;
+  color: #ff4c4c;
   margin-bottom: 10px;
+  font-weight: 500;
 }
