@@ -9,7 +9,7 @@
   z-index: 10;
   width: 340px;
   max-height: 480px;
-  overflow-y: auto;
+  overflow-y: hidden;
   transition: all 0.3s ease;
   color: #e0e0e0;
   border: 1px solid #333;
@@ -89,6 +89,10 @@
 
 .building-info-content {
   padding: 12px 4px;
+  max-height: 300px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #00d8ff #2c2c2c;
 }
 
 .section {

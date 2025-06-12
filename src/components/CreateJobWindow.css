@@ -8,12 +8,17 @@
   border-radius: 16px;
   width: 340px;
   max-width: 90vw;
+  max-height: 55vh; /* 👈 Limits height on small screens */
+  overflow-y: auto;  /* 👈 Enables vertical scrolling */
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
   border: 1px solid #333;
   backdrop-filter: blur(10px);
   color: #e0e0e0;
   font-family: "Segoe UI", sans-serif;
+  scrollbar-width: thin;
+  scrollbar-color: #00d8ff #1c1c1c;
 }
+
 
 .create-job-window h2 {
   font-size: 20px;
